@@ -1,96 +1,166 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>UtilityCheck – Philippine Electric Utilities &amp; Rates</title>
+<meta name="description" content="Every electric cooperative and private utility in the Philippines on one map. Compare monthly residential rates (₱/kWh) and find official websites.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0038a8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a1228" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="UtilityCheck – Philippine Electric Utilities">
+<meta property="og:description" content="Compare monthly electricity rates of every Philippine electric cooperative and private utility.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="preconnect" href="https://tile.openstreetmap.org">
+<script>try{var t=localStorage.getItem("uc-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>UtilityCheck – Philippine Electric Utilities</title>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-:root{--bg:#f4f6fb;--card:#fff;--tx:#0b1b3f;--mu:#5b6684;--bd:#dde3f0;--bl:#0038a8;--rd:#ce1126;--yl:#fcd116;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;color-scheme:dark}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-header{background:linear-gradient(135deg,#0038a8 0%,#0a2a7a 60%,#ce1126 140%);color:#fff;position:relative;overflow:hidden}
-header::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 38px,rgba(252,209,22,.07) 38px 40px)}
-.hw{max-width:960px;margin:0 auto;padding:26px 16px 30px;position:relative;z-index:1;display:flex;gap:14px;align-items:center}
-.hw svg{flex:none;width:64px;height:64px}h1{margin:0;font-size:2rem;letter-spacing:-.02em}h1 span{color:var(--yl)}
-.hw p{margin:2px 0 0;opacity:.9}
-.stripe{height:6px;background:linear-gradient(90deg,var(--bl) 33%,var(--yl) 33% 66%,var(--rd) 66%)}
+:root{--bg:#f3f5fa;--card:#fff;--tx:#0b1b3f;--mu:#586280;--bd:#dce2ef;--bl:#0038a8;--rd:#ce1126;--yl:#fcd116;--lk:#0038a8;--rdt:#ce1126;--tf:none;--sh:0 1px 2px rgba(11,27,63,.08),0 4px 14px rgba(11,27,63,.08);--land:#eef0dc;--lands:#7f98b8;--sea:#bcd9f0;--su:#0a7a3d;--so:#0038a8;--sc:#a15c00;--sp:#6a3fb5;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;--bl:#3a68de;--lk:#8fb0ff;--rdt:#ff8a98;--tf:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9);--sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);--land:#2b3d6e;--lands:#4a5f96;--sea:#16264d;--su:#5fd68f;--so:#8fb0ff;--sc:#ffc266;--sp:#c3a6ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;--bl:#3a68de;--lk:#8fb0ff;--rdt:#ff8a98;--tf:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9);--sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);--land:#2b3d6e;--lands:#4a5f96;--sea:#16264d;--su:#5fd68f;--so:#8fb0ff;--sc:#ffc266;--sp:#c3a6ff;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit;touch-action:manipulation}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--lk);outline-offset:2px}
+a{color:var(--lk)}
 
-.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-input,select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
-input{flex:1;min-width:180px}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:5px 14px;font:inherit;font-size:.85rem;cursor:pointer}
-.chip.on{background:var(--bl);color:#fff;border-color:var(--bl)}
-.cnt{color:var(--mu);font-size:.85rem;margin:0 0 10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:4px;align-content:start}
-.c{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--bl);border-radius:10px;padding:10px 12px}
-.c.P{border-left-color:var(--rd)}.c.C{border-left-color:var(--bl)}
-.c b{display:block}.c small{color:var(--mu)}
-.tg{float:right;font-size:.68rem;padding:1px 8px;border-radius:99px;background:color-mix(in srgb,var(--bl) 12%,transparent);color:var(--bl);font-weight:600}
-.P .tg{background:color-mix(in srgb,var(--rd) 12%,transparent);color:var(--rd)}
-@media(prefers-color-scheme:dark){.tg{color:#8fb0ff}.P .tg{color:#ff8a98}}
-.bar select{flex:none}.tgl{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--mu);margin:0 0 10px}
+/* header */
+header{background:linear-gradient(135deg,#0038a8 0%,#0a2a7a 60%,#ce1126 140%);color:#fff;position:relative;overflow:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+header::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(115deg,transparent 0 38px,rgba(252,209,22,.07) 38px 40px)}
+.hw{display:flex;align-items:center;gap:10px;padding:10px 14px;position:relative;z-index:1}
+.hw svg{flex:none;width:38px;height:38px}
+h1{margin:0;font-size:1.4rem;line-height:1.1;letter-spacing:-.02em}h1 span{color:var(--yl)}
+.hw p{margin:2px 0 0;font-size:.82rem;opacity:.9}
+.tb{margin-left:auto;flex:none;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;padding:0}
+.tb svg{width:20px;height:20px}.tb:active{transform:scale(.92)}
+.stripe{height:5px;background:linear-gradient(90deg,var(--bl) 33%,var(--yl) 33% 66%,var(--rd) 66%)}
+@media(max-width:560px){.hw p{display:none}}
+
+/* map */
+.mp{position:sticky;top:0;z-index:20;padding:8px 10px 6px;background:var(--bg)}
+.mw{position:relative}
+#map{height:38vh;height:38dvh;min-height:210px;background:var(--sea);border:1px solid var(--bd);border-radius:12px;isolation:isolate}
+.leg{position:absolute;left:8px;bottom:8px;z-index:2;display:flex;gap:10px;margin:0;padding:3px 10px;border-radius:99px;font-size:.72rem;color:var(--mu);background:color-mix(in srgb,var(--card) 90%,transparent);box-shadow:var(--sh);pointer-events:none}
+.leg i{display:inline-block;flex:none;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.leg .lp{background:var(--rd)}.leg .lc{background:var(--bl)}
+.leaflet-container{font:inherit;background:var(--sea)}
+.leaflet-tile-pane{filter:var(--tf)}
+.leaflet-container a{color:var(--lk)}
+.land{fill:var(--land);stroke:var(--lands);stroke-width:1;fill-opacity:1}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--tx)}
+.leaflet-popup-content{margin:10px 12px;min-width:220px}
+.leaflet-container a.leaflet-popup-close-button{top:3px;right:3px;width:30px;height:30px;font:22px/30px system-ui;color:var(--mu)}
+
+/* controls */
+.side{padding:6px 10px 0}
+.bar{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:8px}
+.sw{position:relative;grid-column:1/-1}
+.sw svg{position:absolute;left:11px;top:50%;width:16px;height:16px;margin-top:-8px;color:var(--mu);pointer-events:none}
+input[type=search],select{width:100%;min-width:0;height:42px;padding:0 12px;font-size:16px;background:var(--card);border:1px solid var(--bd);border-radius:10px;-webkit-appearance:none;appearance:none}
+input[type=search]{padding-left:34px}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),linear-gradient(135deg,var(--mu) 50%,transparent 50%);background-position:calc(100% - 17px) 52%,calc(100% - 12px) 52%;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -10px 6px;padding:0 10px 2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--bd);background:var(--card);border-radius:99px;padding:6px 12px;font-size:.85rem;transition:background-color .12s,color .12s,border-color .12s}
+.chip[aria-pressed=true]{background:var(--bl);border-color:var(--bl);color:#fff}
+.tgl{display:flex;align-items:center;gap:8px;height:42px;padding:0 12px;font-size:.85rem;color:var(--mu);background:var(--card);border:1px solid var(--bd);border-radius:10px;white-space:nowrap}
+.tgl input{width:18px;height:18px;margin:0;accent-color:var(--bl)}
+.cnt{min-height:1.3em;margin:2px 0 8px;font-size:.8rem;color:var(--mu)}
+
+/* list */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px;align-content:start;padding-bottom:8px}
+.r{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 12px;text-align:left;background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--bl);border-radius:10px;content-visibility:auto;contain-intrinsic-size:auto 52px;transition:border-color .12s,background-color .12s}
+.r.P{border-left-color:var(--rd)}
+.r:active{background:color-mix(in srgb,var(--bl) 8%,var(--card))}
+.r.on{border-color:var(--bl);background:color-mix(in srgb,var(--bl) 10%,var(--card))}
+@media(hover:hover){.r:hover{border-color:var(--bl)}.chip:hover{border-color:var(--bl)}}
+.r .n{flex:1;min-width:0}
+.r b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r small{display:block;font-size:.74rem;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .p{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.r .p.na{font-weight:400;color:var(--mu)}
+.r.old .p{text-decoration:line-through;opacity:.5}
+.empty{grid-column:1/-1;text-align:center;padding:24px 8px;color:var(--mu)}
+.btn{background:var(--bl);color:#fff;border:0;border-radius:10px;padding:9px 16px;font-weight:600}
+.btn:active{transform:scale(.97)}
+
+/* popup card */
+.c{border-left:4px solid var(--bl);padding-left:10px}.c.P{border-left-color:var(--rd)}
+.c .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding-right:18px}
+.c b{font-size:1rem}.c small{color:var(--mu)}
+.tg{flex:none;font-size:.68rem;font-weight:600;padding:1px 8px;border-radius:99px;color:var(--lk);background:color-mix(in srgb,var(--bl) 12%,transparent)}
+.P .tg{color:var(--rdt);background:color-mix(in srgb,var(--rd) 12%,transparent)}
 .rt{margin-top:8px;padding-top:8px;border-top:1px dashed var(--bd)}
 .pr{font-size:1.35rem;font-weight:700;letter-spacing:-.02em}.pr small{font-size:.75rem;font-weight:400}
-.bg{display:inline-block;font-size:.68rem;font-weight:600;padding:1px 8px;border-radius:99px;margin-left:6px;vertical-align:middle;border:1px solid currentColor}
-.s-utility{color:#0a7a3d}.s-official{color:var(--bl)}.s-community{color:#a15c00}.s-presyo{color:#6a3fb5}
-@media(prefers-color-scheme:dark){.s-utility{color:#5fd68f}.s-official{color:#8fb0ff}.s-community{color:#ffc266}.s-presyo{color:#c3a6ff}}
-.old .pr,.old .bg{opacity:.45}.old .pr{text-decoration:line-through}.od{color:var(--rd);font-weight:600}
+.bg{display:inline-block;margin-left:6px;padding:1px 8px;border:1px solid currentColor;border-radius:99px;font-size:.68rem;font-weight:600;vertical-align:middle}
+.s-utility{color:var(--su)}.s-official{color:var(--so)}.s-community{color:var(--sc)}.s-presyo{color:var(--sp)}
+.old .pr,.old .bg{opacity:.45}.old .pr{text-decoration:line-through}.od{color:var(--rdt);font-weight:600}
 .na{color:var(--mu);font-style:italic}
-details{margin-top:4px;font-size:.82rem}summary{cursor:pointer;color:var(--bl)}
-@media(prefers-color-scheme:dark){summary{color:#8fb0ff}}
-footer a{color:var(--bl)}
-footer{color:var(--mu);font-size:.8rem;margin-top:24px}
-#map{background:#bcd9f0;height:42vh;min-height:260px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;z-index:0}
-.leg{font-size:.78rem;color:var(--mu);margin:0 0 4px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:baseline}
-.dt{margin-top:8px;font-size:.78rem;line-height:1.5}.dt div{display:flex;gap:6px}.dt span{color:var(--mu,#777);min-width:62px}.dt a{color:var(--bl);word-break:break-all}.dt em{font-style:normal;opacity:.7}
-.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--tx)}.leaflet-popup-content{margin:8px}.leaflet-popup-content .c{border:0;padding:2px}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}}
-:root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}
-.c[data-n]{cursor:pointer}.land{fill:#eef0dc;fill-opacity:1;stroke:#7f98b8;stroke-width:1}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #map{background:#16264d}:root:not([data-theme="light"]) .land{fill:#2b3d6e;stroke:#4a5f96}}
-:root[data-theme="dark"] #map{background:#16264d}:root[data-theme="dark"] .land{fill:#2b3d6e;stroke:#4a5f96}
+details{margin-top:4px;font-size:.82rem}summary{cursor:pointer;color:var(--lk)}
+.dt{margin-top:8px;font-size:.78rem;line-height:1.5}.dt div{display:flex;gap:6px}.dt span{min-width:62px;color:var(--mu)}.dt a{word-break:break-all}.dt em{font-style:normal;opacity:.7}
 
-/* compact one-screen dashboard */
-.hw{max-width:none!important}
-.hw{padding:10px 14px!important;gap:10px!important}.hw svg{width:40px!important;height:40px!important}h1{font-size:1.45rem!important}.hw p{font-size:.85rem}
-.app{max-width:none;margin:0;padding:10px 12px;display:block}
-.bar{margin-bottom:6px}.bar input,.bar select{padding:6px 10px;font-size:.85rem}.chips{margin-bottom:6px}.chip{padding:3px 11px;font-size:.78rem}
-.tgl{margin:0 0 4px;font-size:.78rem}.cnt{margin:0 0 6px;font-size:.78rem}
-.r{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bd);border-left:3px solid var(--bl);border-radius:6px;padding:3px 8px;font-size:.78rem;line-height:1.25;cursor:pointer;min-width:0}
-.r.P{border-left-color:var(--rd)}.r:hover{border-color:var(--bl)}
-.r b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.r .p{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}.r .p.na{color:var(--mu);font-weight:400}
-.r.old .p{text-decoration:line-through;opacity:.5}
-footer{margin:0!important;padding:4px 12px;font-size:.68rem!important;line-height:1.3}
+/* footer + dialog */
+footer{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));font-size:.72rem;line-height:1.5;color:var(--mu)}
+.lb{background:none;border:0;padding:0;font-size:inherit;color:var(--lk);text-decoration:underline}
+dialog{max-width:min(560px,calc(100vw - 32px));padding:18px 20px;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(5,10,25,.55)}
+dialog h2{margin:0 0 8px;font-size:1.05rem}dialog p{margin:0 0 14px;font-size:.88rem;color:var(--mu)}
+
+@media(min-width:560px) and (max-width:899px){.bar{grid-template-columns:repeat(4,1fr)}}
+@media(max-height:520px) and (max-width:899px){.mp{position:static}}
 @media(min-width:900px){
-html,body{height:100%}body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
-header,.stripe{flex:none}
-.app{flex:1;min-height:0;display:grid;grid-template-columns:minmax(280px,34%) 1fr;gap:12px}
-.mp{display:flex;flex-direction:column;min-height:0}#map{flex:1;height:auto;min-height:0;margin-bottom:4px}
-.side{display:flex;flex-direction:column;min-height:0}.side .grid{flex:1;min-height:0;overflow-y:auto;padding-right:2px}
-footer{flex:none}
+html,body{height:100%}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+header,.stripe,footer{flex:none}
+.hw{padding:8px 16px}
+.app{flex:1;min-height:0;display:grid;grid-template-columns:clamp(340px,30vw,440px) 1fr}
+.side{order:-1;display:flex;flex-direction:column;min-height:0;padding:10px 0 0 12px}
+.chips{flex-wrap:wrap;overflow:visible;margin:0 0 8px;padding:0;gap:5px}
+.chip{padding:6px 10px}
+.grid{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;grid-template-columns:1fr;padding-right:8px}
+.mp{position:static;display:flex;min-height:0;padding:10px 12px}
+.mw{flex:1;min-width:0}
+#map{height:100%;min-height:0}
+input[type=search],select{font-size:14px}
 }
-</style><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script></head><body>
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
 <header><div class="hw">
-<svg viewBox="0 0 64 64" aria-label="UtilityCheck logo"><rect width="64" height="64" rx="16" fill="#fcd116"/><path d="M36 6 14 36h14l-4 22 26-32H35z" fill="#0038a8" opacity=".18"/><path d="M16 33l11 11 22-24" fill="none" stroke="#0038a8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="12" r="6" fill="#ce1126"/></svg>
-<div><h1>Utility<span>Check</span></h1><p>Every electric company &amp; cooperative in the Philippines, in one list.</p></div></div></header>
+<svg viewBox="0 0 64 64" role="img" aria-label="UtilityCheck logo"><rect width="64" height="64" rx="16" fill="#fcd116"/><path d="M36 6 14 36h14l-4 22 26-32H35z" fill="#0038a8" opacity=".18"/><path d="M16 33l11 11 22-24" fill="none" stroke="#0038a8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="12" r="6" fill="#ce1126"/></svg>
+<div><h1>Utility<span>Check</span></h1><p>Every electric company &amp; cooperative in the Philippines, in one list.</p></div>
+<button class="tb" id="tb" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
 <div class="stripe"></div>
 <main class="app">
-<section class="mp"><div id="map" role="application" aria-label="Map of Philippine electric utilities"></div>
-<p class="leg"><i style="background:#ce1126"></i>Private utility<i style="background:#0038a8"></i>Electric cooperative · Tap a dot for details</p></section>
+<section class="mp" aria-label="Map"><div class="mw"><div id="map" role="application" aria-label="Map of Philippine electric utilities"></div>
+<p class="leg"><span><i class="lp"></i>Private</span><span><i class="lc"></i>Co-op</span></p></div></section>
 <aside class="side">
-<div class="bar"><input type="search" id="q" placeholder="Search utility or province…">
+<div class="bar">
+<div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="q" placeholder="Search utility or province…" aria-label="Search utility or province" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
 <select id="mo" aria-label="Billing month"></select>
 <select id="so" aria-label="Sort"><option value="az">Sort: A–Z</option><option value="lo">Cheapest first</option><option value="hi">Most expensive first</option></select>
-<select id="vs" aria-label="Verification status"><option value="all">Any status</option><option value="utility">Verified by utility</option><option value="official">Official advisory</option><option value="presyo">Via PRESYO-PH</option><option value="community">Community-reported</option></select></div>
-<div class="chips" id="ch"></div>
-<label class="tgl"><input type="checkbox" id="hr" style="flex:none;min-width:0"> Only utilities with a rate</label>
-<p class="cnt" id="cnt"></p>
+<select id="vs" aria-label="Verification status"><option value="all">Any status</option><option value="utility">Verified by utility</option><option value="official">Official advisory</option><option value="presyo">Via PRESYO-PH</option><option value="community">Community-reported</option></select>
+<label class="tgl"><input type="checkbox" id="hr"> With rate only</label>
+</div>
+<div class="chips" id="ch" role="group" aria-label="Filter utilities"><button type="button" class="chip" data-f="all" aria-pressed="true">All</button><button type="button" class="chip" data-f="P" aria-pressed="false">Private</button><button type="button" class="chip" data-f="C" aria-pressed="false">Co-op</button><button type="button" class="chip" data-f="L" aria-pressed="false">Luzon</button><button type="button" class="chip" data-f="V" aria-pressed="false">Visayas</button><button type="button" class="chip" data-f="M" aria-pressed="false">Mindanao</button></div>
+<p class="cnt" id="cnt" role="status" aria-live="polite"></p>
 <div class="grid" id="g"></div>
+<noscript><p class="empty">UtilityCheck needs JavaScript to show rates.</p></noscript>
 </aside>
 </main>
-<footer>List compiled from general knowledge and may be incomplete or outdated; verify with NEA (cooperatives) and ERC (private utilities). Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Rates marked "Via PRESYO-PH" are monthly residential averages for the billing month selected, from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), not a utility bill. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</footer>
+<footer>Indicative monthly residential rates from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a>. Your utility's official bill always prevails. <button class="lb" id="ab" type="button">Disclaimer</button> · <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a></footer>
+<dialog id="dl" aria-labelledby="dh"><h2 id="dh">About these rates</h2>
+<p>List compiled from general knowledge and may be incomplete or outdated; verify with NEA (cooperatives) and ERC (private utilities). Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Rates marked "Via PRESYO-PH" are monthly residential averages for the billing month selected, from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), not a utility bill. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</p>
+<button class="btn" id="dc" type="button">Close</button></dialog>
 <script>
 // code|type(P=private,C=cooperative)|island(L/V/M)|area
 const R=`MERALCO|P|L|Metro Manila, Rizal, Cavite, Bulacan, Laguna, Batangas, Quezon|14.600|121.000
@@ -238,24 +308,6 @@ LUBELCO|C|L|Lubang Island, Occidental Mindoro|13.800|120.120
 NORDECO|C|M|Davao del Norte &amp; Davao de Oro|7.800|126.000
 PAMES|C|L|Pantabangan, Nueva Ecija|15.810|121.140
 SIASELCO|C|M|Siasi, Sulu|5.550|120.820`.split("\n").map(l=>{const a=l.split("|");return{n:a[0],t:a[1],i:a[2],a:a[3],la:+a[4],ln:+a[5]}});
-const LL=window.L;let map=null,ML=null;if(!LL)document.getElementById("map").innerHTML='<p class="cnt" style="padding:12px">Map could not load (check your internet connection). The list still works.</p>';
-if(LL){map=LL.map("map",{center:[12.5,122.5],zoom:6,minZoom:5,maxBounds:[[3,114],[22.5,129]]});ML=LL.layerGroup().addTo(map);
-map.createPane("land").style.zIndex=150;
-[[[18.5,120.6],[18.6,121.4],[18.3,122.2],[17.2,122.45],[16.2,122.3],[15.2,121.6],[14.6,121.9],[14.1,122.3],[14.1,122.9],[13.9,123.3],[13.2,123.7],[13.0,124.1],[12.6,124.0],[12.9,123.6],[13.5,123.2],[13.9,122.8],[13.7,122.3],[13.6,121.7],[13.8,121.05],[14.2,120.6],[14.5,120.6],[14.7,120.5],[14.5,120.4],[14.75,120.3],[15.3,119.9],[16.1,119.75],[16.4,120.3],[17.5,120.35],[18.4,120.55]],
-[[13.5,120.4],[13.5,121.5],[12.5,121.5],[12.2,121.1],[12.3,120.7],[13.0,120.3]],
-[[11.3,119.4],[11.1,119.6],[10.0,119.0],[9.0,118.2],[8.4,117.2],[8.7,117.1],[9.7,118.3],[10.6,119.0]],
-[[11.9,122.0],[11.9,122.8],[11.3,123.1],[10.7,122.6],[10.4,122.1],[11.2,121.9]],
-[[11.0,123.0],[10.8,123.5],[9.9,123.3],[9.1,123.2],[9.2,122.9],[10.0,122.8],[10.7,122.5]],
-[[11.2,123.95],[10.0,123.65],[9.5,123.3],[9.55,123.6],[10.3,124.05],[11.0,124.05]],
-[[10.15,124.1],[10.15,124.6],[9.8,124.6],[9.6,124.2],[9.7,123.85],[9.9,123.8]],
-[[11.5,124.4],[11.4,125.0],[10.5,125.2],[9.9,125.2],[10.3,124.8],[10.6,124.5],[10.9,124.3]],
-[[12.6,124.2],[12.5,125.4],[11.4,125.75],[10.9,125.6],[11.2,125.0],[11.5,124.5],[12.0,124.3]],
-[[12.7,123.3],[12.2,123.8],[11.9,123.5],[12.3,123.2]],
-[[9.8,125.5],[9.4,126.0],[8.5,126.5],[7.5,126.6],[6.9,126.3],[6.1,126.2],[5.95,125.4],[6.3,125.0],[6.1,124.6],[6.9,124.2],[7.3,123.7],[7.8,122.9],[7.0,122.1],[7.7,122.3],[8.2,123.0],[8.6,123.4],[8.2,124.2],[8.5,124.65],[8.9,125.4]]
-].forEach(p=>LL.polygon(p,{pane:"land",className:"land",interactive:false}).addTo(map));
-LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap contributors"}).addTo(map);
-}
-const IS={L:"Luzon",V:"Visayas",M:"Mindanao"};let F="all";const $=x=>document.getElementById(x);
 // DET[utility]=[officialWebsite,officialFacebook]; null or missing = n/a. Only add links you have verified.
 const DET={
 "ABRECO":[null,"https://www.facebook.com/AbraElectricCoop"],
@@ -389,7 +441,6 @@ const DET={
 "ZAMSURECO II":[null,"https://www.facebook.com/ZamsurecoDos"],
 "ZANECO":["https://zaneco.ph",null]
 };
-const lk=v=>v&&/^https:\/\//.test(v)?`<a href="${v}" target="_blank" rel="noopener">${v.replace(/^https:\/\/(www\.)?/,"")}</a>`:"<em>n/a</em>";
 const SRC={utility:{l:"Verified by utility",k:1},official:{l:"Official advisory",k:2},community:{l:"Community-reported (unverified)",k:3},presyo:{l:"Via PRESYO-PH (ICSC)",k:2}};
 const PU="https://presyo.icsc.ngo/national";
 // RATES[utility][YYYY-MM] = residential rate in PHP/kWh (source: PRESYO-PH). To add a month, add "YYYY-MM":rate to each utility.
@@ -541,35 +592,134 @@ const RATES={
 "SAJELCO":{"2023-01":16.9801,"2023-02":16.8764,"2023-03":16.9643,"2023-04":16.8185,"2023-05":16.479,"2023-06":16.2873,"2023-07":15.9789,"2023-08":13.04,"2023-09":13.09,"2023-10":13.07,"2023-11":15.21,"2023-12":15.23,"2024-01":12.56,"2024-02":7.98,"2024-03":12.51,"2024-04":11.09,"2024-05":11.75,"2024-06":12.51,"2024-07":13.38,"2024-08":12.38,"2024-09":12.25,"2024-10":11.9,"2024-11":11.28,"2024-12":11.71,"2025-01":11.53,"2025-02":7.26,"2025-03":2.12,"2025-04":11.28,"2025-05":10.4,"2025-06":10.08,"2025-07":9.9,"2025-08":9.95,"2025-09":9.84,"2025-10":10.3,"2025-11":9.55,"2025-12":9.66,"2026-01":9.4423,"2026-02":10.363,"2026-03":10.5776,"2026-04":9.6868,"2026-05":10.3229,"2026-06":9.8479,"2026-07":8.7121,"2026-08":9.8159,"2026-09":10.4502},
 "TEI":{"2023-01":14.659,"2023-02":14.4397,"2023-03":14.5468,"2023-04":13.5835,"2023-05":13.2748,"2023-06":12.9498,"2023-07":11.8222,"2023-08":9.16,"2023-09":12.19,"2023-10":10.58,"2023-11":11.08,"2023-12":10.4,"2024-01":9.95,"2024-02":9.76,"2024-03":9.78,"2024-04":10.96,"2024-05":11.56,"2024-06":10.31,"2024-07":11.41,"2024-08":11.44,"2024-09":12.39,"2024-10":10.45,"2024-11":10.89,"2024-12":11.32,"2025-01":10.84,"2025-02":10.69,"2025-03":10.74,"2025-04":10.8,"2025-05":10.3,"2025-06":10.14,"2025-07":10.2,"2025-08":10.79,"2025-09":10.24,"2025-11":11.38,"2026-01":10.76,"2026-02":10.51,"2026-03":9.69,"2026-04":12.36,"2026-05":12.12,"2026-06":13,"2026-08":13.73,"2026-09":12.07}
 };
-const ym=m=>{const p=m.split("-");return +p[0]*12+ +p[1]-1},now=new Date(),cur=now.getFullYear()*12+now.getMonth();
-const fm=m=>new Date(+m.slice(0,4),+m.slice(5,7)-1,1).toLocaleString("en-PH",{month:"long",year:"numeric"});
+</script>
+<script>
+(()=>{
+"use strict";
+const IS={L:"Luzon",V:"Visayas",M:"Mindanao"},$=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safe=v=>typeof v==="string"&&/^https:\/\//.test(v)?v:null;
+const lk=v=>{const s=safe(v);return s?`<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.replace(/^https:\/\/(www\.)?/,""))}</a>`:"<em>n/a</em>"};
+
+/* ---- data prep (once) ---- */
+R.forEach(u=>{u.a=u.a.replace(/&amp;/g,"&");u.k=(u.n+" "+u.a+" "+IS[u.i]).toLowerCase()});
+const BY=new Map(R.map(u=>[u.n,u]));
+const ALPHA=[...R].sort((a,b)=>a.n.localeCompare(b.n,"en",{numeric:true,sensitivity:"base"}));
+const HK={};for(const n in RATES){const h=RATES[n];HK[n]=h?Object.keys(h).sort().reverse():[]}
+const ym=m=>+m.slice(0,4)*12+ +m.slice(5,7)-1,now=new Date(),cur=now.getFullYear()*12+now.getMonth();
+const FM={},fm=m=>FM[m]||(FM[m]=new Date(+m.slice(0,4),+m.slice(5,7)-1,1).toLocaleString("en-PH",{month:"long",year:"numeric"}));
 const MS=[...new Set(Object.values(RATES).flatMap(h=>h?Object.keys(h):[]))].filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().reverse();
-let MO=MS[0]||"latest";
+let MO=MS[0]||"latest",F="all",ACT=null,CUR=[],RC=new Map();const LC=new Map();
+
 function pick(n,m){const h=RATES[n];if(!h||!(m in h))return null;const v=h[m],x=typeof v==="number"?{r:v,s:"presyo",u:PU}:Object.assign({},v);x.m=m;return x.r>0&&SRC[x.s]&&(x.s==="community"||x.u)?x:null}
-function latest(n){const h=RATES[n];if(!h)return null;for(const m of Object.keys(h).sort().reverse()){const x=pick(n,m);if(x)return x}return null}
-function rate(n){return MO==="latest"?latest(n):pick(n,MO)}
-const isOld=x=>x&&MO==="latest"&&cur-ym(x.m)>2;
-$("mo").innerHTML=MS.map(m=>`<option value="${m}">${fm(m)}</option>`).join("")+'<option value="latest">Latest available</option>';
-$("mo").value=MO;$("mo").onchange=e=>{MO=e.target.value;draw()};
-const chips=[["all","All"],["P","Private"],["C","Cooperative"],["L","Luzon"],["V","Visayas"],["M","Mindanao"]];
-$("ch").innerHTML=chips.map(c=>`<button class="chip${c[0]==="all"?" on":""}" data-f="${c[0]}">${c[1]}</button>`).join("");
-$("ch").onclick=e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.f;[...$("ch").children].forEach(x=>x.classList.toggle("on",x===b));draw()};
-["q","so","vs","hr"].forEach(i=>$(i).oninput=draw);
-function card(u){const x=rate(u.n),old=isOld(x),lt=latest(u.n);let r=MO!=="latest"&&lt&&!x?`<div class="rt na">No data for ${fm(MO)}. Latest: ₱${lt.r.toFixed(2)} (${fm(lt.m)})</div>`:'<div class="rt na">Rate not yet available</div>';
-if(x){const bd=x.b?`<details><summary>View breakdown</summary>${Object.entries(x.b).map(([k,v])=>`${k}: ₱${(+v).toFixed(4)}`).join("<br>")}</details>`:"";
-r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/kWh</small></span><span class="bg s-${x.s}">${SRC[x.s].l}</span><br><small>Billing month: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}${x.u?` · <a href="${x.u}" target="_blank" rel="noopener">Source</a>`:""}</small>${bd}</div>`}
-return `<div data-n="${u.n}" class="c ${u.t}${old?" old":""}"><span class="tg">${u.t==="P"?"Private":"Co-op"}</span><b>${u.n}</b><small>${u.a} · ${IS[u.i]}</small>${r}<div class="dt"><div><span>Website</span>${lk((DET[u.n]||[])[0])}</div><div><span>Facebook</span>${lk((DET[u.n]||[])[1])}</div></div></div>`}
+function latest(n){if(LC.has(n))return LC.get(n);let r=null;for(const m of HK[n]||[]){const x=pick(n,m);if(x){r=x;break}}LC.set(n,r);return r}
+function rate(n){if(MO==="latest")return latest(n);if(RC.has(n))return RC.get(n);const x=pick(n,MO);RC.set(n,x);return x}
+const isOld=x=>!!x&&MO==="latest"&&cur-ym(x.m)>2;
+
+/* ---- views ---- */
+function card(u){
+const x=rate(u.n),old=isOld(x),lt=latest(u.n),d=DET[u.n]||[];let r;
+if(x){const su=safe(x.u),bd=x.b?`<details><summary>View breakdown</summary>${Object.entries(x.b).map(([k,v])=>`${esc(k)}: ₱${(+v).toFixed(4)}`).join("<br>")}</details>`:"";
+r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/kWh</small></span><span class="bg s-${x.s}">${SRC[x.s].l}</span><br><small>Billing month: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}${su?` · <a href="${esc(su)}" target="_blank" rel="noopener">Source</a>`:""}</small>${bd}</div>`}
+else r=MO!=="latest"&&lt?`<div class="rt na">No data for ${fm(MO)}. Latest: ₱${lt.r.toFixed(2)} (${fm(lt.m)})</div>`:'<div class="rt na">Rate not yet available</div>';
+return `<div class="c ${u.t}${old?" old":""}"><div class="hd"><b>${esc(u.n)}</b><span class="tg">${u.t==="P"?"Private":"Co-op"}</span></div><small>${esc(u.a)} · ${IS[u.i]}</small>${r}<div class="dt"><div><span>Website</span>${lk(d[0])}</div><div><span>Facebook</span>${lk(d[1])}</div></div></div>`}
+
 function row(u){const x=rate(u.n),old=isOld(x);
-const t=`${u.n} · ${u.a} · ${IS[u.i]}`+(x?` · ${SRC[x.s].l}, ${fm(x.m)}${old?" (outdated)":""}`:(MO!=="latest"?" · No data for "+fm(MO):" · Rate not yet available"));
-return `<div data-n="${u.n}" class="r ${u.t}${old?" old":""}" title="${t}"><b>${u.n}</b><span class="p${x?"":" na"}">${x?"₱"+x.r.toFixed(2):"—"}</span></div>`}
-function draw(){const q=$("q").value.toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked;
-let LS=R.filter(u=>(F==="all"||u.t===F||u.i===F)&&(u.n+" "+u.a+" "+IS[u.i]).toLowerCase().includes(q)).filter(u=>{const x=rate(u.n);return(vs==="all"||(x&&x.s===vs))&&(!hr||x)});
-if(so!=="az"){const v=u=>{const x=rate(u.n);return x?x.r:null};LS.sort((a,b)=>{const p=v(a),r=v(b);if(p===null)return r===null?0:1;if(r===null)return -1;return so==="lo"?p-r:r-p})}
-$("cnt").textContent=LS.length+" of "+R.length+" utilities · "+LS.filter(u=>rate(u.n)).length+" with a rate ("+(MO==="latest"?"latest available":fm(MO))+")";
-if(map){ML.clearLayers();LS.forEach(u=>{u.mk=LL.circleMarker([u.la,u.ln],{radius:7,color:"#fff",weight:1.5,fillColor:u.t==="P"?"#ce1126":"#0038a8",fillOpacity:rate(u.n)?.95:.3}).bindPopup(()=>card(u),{minWidth:250}).addTo(ML)});
-if(LS.length&&(F!=="all"||q))map.fitBounds(LL.latLngBounds(LS.map(u=>[u.la,u.ln])),{padding:[30,30],maxZoom:9});else if(!q&&F==="all")map.setView([12.5,122.5],map.getZoom()<6?6:map.getZoom());}
-$("g").innerHTML=LS.map(row).join("")||'<p class="cnt">No matches. Try clearing a filter.</p>'}
-$("g").onclick=e=>{const c=e.target.closest(".r");if(!c)return;const u=R.find(x=>x.n===c.dataset.n);if(u&&u.mk){$("map").scrollIntoView({behavior:"smooth",block:"center"});map.flyTo([u.la,u.ln],10);u.mk.openPopup()}};
-addEventListener("resize",()=>map&&map.invalidateSize());
-draw();setTimeout(()=>map&&map.invalidateSize(),0);
-</script></body></html>
+return `<button type="button" class="r ${u.t}${old?" old":""}${u.n===ACT?" on":""}" data-n="${esc(u.n)}"><span class="n"><b>${esc(u.n)}</b><small>${esc(u.a)} · ${IS[u.i]}${old?" · outdated":""}</small></span><span class="p${x?"":" na"}">${x?"₱"+x.r.toFixed(2):"—"}</span></button>`}
+
+/* ---- filter + render (no timers, at most once per frame) ---- */
+let raf=0,lastKey=null;
+const schedule=()=>{raf||(raf=requestAnimationFrame(()=>{raf=0;draw()}))};
+function draw(){
+const q=$("q").value.trim().toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked;
+const LS=ALPHA.filter(u=>{if(!(F==="all"||u.t===F||u.i===F)||(q&&!u.k.includes(q)))return false;const x=rate(u.n);return(vs==="all"||(x&&x.s===vs))&&(!hr||x)});
+if(so!=="az"){const v=u=>{const x=rate(u.n);return x?x.r:null};LS.sort((a,b)=>{const p=v(a),r=v(b);if(p===null)return r===null?0:1;if(r===null)return-1;return so==="lo"?p-r:r-p})}
+CUR=LS;
+$("cnt").textContent=LS.length+" of "+R.length+" utilities · "+LS.reduce((n,u)=>n+(rate(u.n)?1:0),0)+" with a rate ("+(MO==="latest"?"latest available":fm(MO))+")";
+$("g").innerHTML=LS.length?LS.map(row).join(""):'<div class="empty">No matches.<br><br><button type="button" class="btn" data-reset>Clear filters</button></div>';
+syncMap(LS,[F,q,vs,hr].join("|"));
+}
+
+/* ---- map (created after first paint of the list; markers built once) ---- */
+let map=null,ML=null,ft=0;
+const HB=[[5,117],[20.8,127]];
+function mkStyle(u){return{radius:7,color:"#fff",weight:1.5,fillColor:u.t==="P"?"#ce1126":"#0038a8",fillOpacity:u.fo}}
+function syncMap(LS,key){
+if(!map)return;
+const keep=new Set(LS);
+for(const u of R){const on=keep.has(u);
+if(on&&!u.on){ML.addLayer(u.mk);u.on=1}else if(!on&&u.on){ML.removeLayer(u.mk);u.on=0}
+if(on){const fo=rate(u.n)?.95:.3;if(fo!==u.fo){u.fo=fo;u.mk.setStyle({fillOpacity:fo})}}}
+if(key!==lastKey){lastKey=key;clearTimeout(ft);ft=setTimeout(()=>{if(!LS.length)return;
+const o={animate:true,duration:.4};
+if(LS.length===R.length)map.fitBounds(HB,o);else map.fitBounds(L.latLngBounds(LS.map(u=>[u.la,u.ln])),{...o,padding:[30,30],maxZoom:9})},100)}
+}
+function setActive(n){ACT=n;const g=$("g");g.querySelectorAll(".r.on").forEach(e=>e.classList.remove("on"));
+if(n){const e=g.querySelector('[data-n="'+CSS.escape(n)+'"]');if(e){e.classList.add("on");if(matchMedia("(min-width:900px)").matches)e.scrollIntoView({block:"nearest"})}}}
+
+function initMap(){
+const LL=window.L,el=$("map");
+if(!LL){el.innerHTML='<p class="cnt" style="padding:12px">Map could not load (check your internet connection). The list still works.</p>';return}
+map=LL.map(el,{minZoom:5,maxBounds:[[3,114],[22.5,129]],preferCanvas:true,zoomSnap:.5,zoomDelta:1});
+map.fitBounds(HB,{animate:false});
+map.createPane("land").style.zIndex=150;
+const sr=LL.svg({pane:"land"});
+[[[18.5,120.6],[18.6,121.4],[18.3,122.2],[17.2,122.45],[16.2,122.3],[15.2,121.6],[14.6,121.9],[14.1,122.3],[14.1,122.9],[13.9,123.3],[13.2,123.7],[13.0,124.1],[12.6,124.0],[12.9,123.6],[13.5,123.2],[13.9,122.8],[13.7,122.3],[13.6,121.7],[13.8,121.05],[14.2,120.6],[14.5,120.6],[14.7,120.5],[14.5,120.4],[14.75,120.3],[15.3,119.9],[16.1,119.75],[16.4,120.3],[17.5,120.35],[18.4,120.55]],
+[[13.5,120.4],[13.5,121.5],[12.5,121.5],[12.2,121.1],[12.3,120.7],[13.0,120.3]],
+[[11.3,119.4],[11.1,119.6],[10.0,119.0],[9.0,118.2],[8.4,117.2],[8.7,117.1],[9.7,118.3],[10.6,119.0]],
+[[11.9,122.0],[11.9,122.8],[11.3,123.1],[10.7,122.6],[10.4,122.1],[11.2,121.9]],
+[[11.0,123.0],[10.8,123.5],[9.9,123.3],[9.1,123.2],[9.2,122.9],[10.0,122.8],[10.7,122.5]],
+[[11.2,123.95],[10.0,123.65],[9.5,123.3],[9.55,123.6],[10.3,124.05],[11.0,124.05]],
+[[10.15,124.1],[10.15,124.6],[9.8,124.6],[9.6,124.2],[9.7,123.85],[9.9,123.8]],
+[[11.5,124.4],[11.4,125.0],[10.5,125.2],[9.9,125.2],[10.3,124.8],[10.6,124.5],[10.9,124.3]],
+[[12.6,124.2],[12.5,125.4],[11.4,125.75],[10.9,125.6],[11.2,125.0],[11.5,124.5],[12.0,124.3]],
+[[12.7,123.3],[12.2,123.8],[11.9,123.5],[12.3,123.2]],
+[[9.8,125.5],[9.4,126.0],[8.5,126.5],[7.5,126.6],[6.9,126.3],[6.1,126.2],[5.95,125.4],[6.3,125.0],[6.1,124.6],[6.9,124.2],[7.3,123.7],[7.8,122.9],[7.0,122.1],[7.7,122.3],[8.2,123.0],[8.6,123.4],[8.2,124.2],[8.5,124.65],[8.9,125.4]]
+].forEach(p=>LL.polygon(p,{renderer:sr,className:"land",interactive:false}).addTo(map));
+LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap contributors"}).addTo(map);
+ML=LL.layerGroup().addTo(map);
+for(const u of R){u.fo=rate(u.n)?.95:.3;u.mk=LL.circleMarker([u.la,u.ln],mkStyle(u));u.mk.un=u.n;
+u.mk.bindPopup(()=>card(u),{minWidth:240,maxWidth:300,autoPanPaddingTopLeft:[10,50],autoPanPaddingBottomRight:[10,10]})}
+map.on("popupopen",e=>{const s=e.popup._source;e.popup.options.maxHeight=Math.max(140,map.getSize().y-90);setActive(s&&s.un)});
+map.on("popupclose",()=>setActive(null));
+if("ResizeObserver"in window)new ResizeObserver(()=>map.invalidateSize({animate:false})).observe(el);else addEventListener("resize",()=>map.invalidateSize());
+lastKey="all|||false";
+syncMap(CUR,lastKey);
+}
+
+/* ---- events ---- */
+$("q").addEventListener("input",schedule);
+for(const i of["so","vs","hr"])$(i).addEventListener("change",schedule);
+$("mo").addEventListener("change",e=>{MO=e.target.value;RC=new Map();schedule()});
+$("ch").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.f;lastKey=null;
+for(const x of $("ch").children)x.setAttribute("aria-pressed",x===b);schedule()});
+$("g").addEventListener("click",e=>{
+if(e.target.closest("[data-reset]")){F="all";$("q").value="";$("vs").value="all";$("so").value="az";$("hr").checked=false;lastKey=null;
+for(const x of $("ch").children)x.setAttribute("aria-pressed",x.dataset.f==="all");schedule();return}
+const b=e.target.closest(".r");if(!b)return;const u=BY.get(b.dataset.n);if(!u||!map||!u.on)return;
+const ll=[u.la,u.ln];
+if(!(map.getZoom()>=8&&map.getBounds().pad(-.2).contains(ll)))map.setView(ll,Math.max(map.getZoom(),9),{animate:false});
+u.mk.openPopup()});
+
+/* theme toggle */
+const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+const mq=matchMedia("(prefers-color-scheme: dark)"),root=document.documentElement;
+const dark=()=>root.dataset.theme?root.dataset.theme==="dark":mq.matches;
+const icon=()=>{const d=dark(),b=$("tb");b.innerHTML=d?SUN:MOON;b.setAttribute("aria-label",d?"Switch to light mode":"Switch to dark mode")};
+$("tb").addEventListener("click",()=>{const t=dark()?"light":"dark";root.dataset.theme=t;try{localStorage.setItem("uc-theme",t)}catch(e){}icon()});
+if(mq.addEventListener)mq.addEventListener("change",icon);icon();
+
+/* disclaimer */
+const dl=$("dl");$("ab").addEventListener("click",()=>dl.showModal());$("dc").addEventListener("click",()=>dl.close());
+dl.addEventListener("click",e=>{if(e.target===dl)dl.close()});
+
+/* boot: list first, then map as soon as Leaflet (deferred) is ready */
+$("mo").innerHTML=MS.map(m=>`<option value="${m}">${fm(m)}</option>`).join("")+'<option value="latest">Latest available</option>';
+$("mo").value=MO;
+draw();
+if(window.L)initMap();else addEventListener("DOMContentLoaded",initMap);
+})();
+</script>
+</body>
+</html>
