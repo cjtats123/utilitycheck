@@ -19,4 +19,6 @@ node scripts/fetch-rates.mjs --refresh    # also overwrite existing numeric rate
 node scripts/fetch-rates.mjs --from 2024-01 --to 2026-05
 node scripts/fetch-rates.mjs --dry        # report only, don't write
 ```
+**If Node can't reach the site** (office network/firewall) but your browser can: open https://presyo.icsc.ngo in the browser, press F12, open the Console, paste the contents of `scripts/browser-export.js` and press Enter (Chrome may ask you to type `allow pasting` first). It downloads `rates.json`; put it in the repo folder and run `node scripts/fetch-rates.mjs --file rates.json`.
+
 It is safe to re-run (idempotent) and run it again each month to pick up the new one. Object-style entries (`{r,s,u,b}`) are never modified. API names are matched to the site's names (`NEECO 2 - A1` -> `NEECO II Area 1`, `NUVELCO` -> `NUVELECO`, etc.); anything unmatched is listed at the end of the run. Fix spelling differences in the `ALIASES` map at the top of the script.

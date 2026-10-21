@@ -12,6 +12,7 @@
  *   node scripts/fetch-rates.mjs --refresh        # also overwrite existing numeric rates
  *   node scripts/fetch-rates.mjs --from 2024-01 --to 2026-05
  *   node scripts/fetch-rates.mjs --dry            # fetch and report, don't write
+ *   node scripts/fetch-rates.mjs --file rates.json  # offline: read a JSON saved from the browser (see README)
  *
  * Values stored in RATES that are objects ({r, s, u, b}) are never touched.
  */
@@ -99,30 +100,41 @@ const unmatched = new Map();
 let added = 0, changed = 0, kept = 0;
 const monthsWithData = [];
 
-// discover the range from the API itself (latest period + available years), unless overridden
-let probe = null;
-const now = new Date();
-for (let i = 0; i < 24 && !probe?.latest_available_period; i++) {
-  const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-  probe = await get(d.getMonth() + 1, d.getFullYear());
+const FILE = opt("file");
+let fileData = null;
+if (FILE) fileData = JSON.parse(fs.readFileSync(FILE, "utf8")); // { "YYYY-MM": { "API NAME": rate } }
+
+let start, end;
+if (FILE) {
+  const ks = Object.keys(fileData).filter(k => ym(k)).sort();
+  start = ym(opt("from")) || ym(ks[0]); end = ym(opt("to")) || ym(ks[ks.length - 1]);
+} else {
+  // discover the range from the API itself (latest period + available years), unless overridden
+  let probe = null;
+  const now = new Date();
+  for (let i = 0; i < 24 && !probe?.latest_available_period; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    probe = await get(d.getMonth() + 1, d.getFullYear());
+  }
+  end = ym(opt("to")); start = ym(opt("from"));
+  if (!end) {
+    const lp = /^(\w+)\s+(\d{4})$/.exec(probe?.latest_available_period || "");
+    end = lp ? { y: +lp[2], m: MONTHS.indexOf(lp[1]) + 1 } : { y: now.getFullYear(), m: now.getMonth() + 1 };
+  }
+  if (!start) {
+    const ys = probe?.filters?.years || [];
+    start = { y: ys.length ? Math.min(...ys) : end.y, m: 1 };
+  }
 }
-let end = ym(opt("to")), start = ym(opt("from"));
-if (!end) {
-  const lp = /^(\w+)\s+(\d{4})$/.exec(probe?.latest_available_period || "");
-  end = lp ? { y: +lp[2], m: MONTHS.indexOf(lp[1]) + 1 } : { y: now.getFullYear(), m: now.getMonth() + 1 };
-}
-if (!start) {
-  const ys = probe?.filters?.years || [];
-  start = { y: ys.length ? Math.min(...ys) : end.y, m: 1 };
-}
-console.log(`Range: ${key(start)} -> ${key(end)}  (${BASE})`);
+console.log(`Range: ${key(start)} -> ${key(end)}  (${FILE ? "file " + FILE : BASE})`);
 
 for (let i = idx(start); i <= idx(end); i++) {
   const { y, m } = fromIdx({ i });
-  const data = await get(m, y);
-  const got = extract(data, m, y);
   const k = key({ y, m });
-  if (!got) { console.log(`  ${k}  no data`); await sleep(150); continue; }
+  let got;
+  if (FILE) { const o = fileData[k]; got = o && Object.keys(o).length ? new Map(Object.entries(o).filter(([, v]) => +v > 0).map(([n, v]) => [n, +v])) : null; }
+  else { got = extract(await get(m, y), m, y); await sleep(150); }
+  if (!got || !got.size) { console.log(`  ${k}  no data`); continue; }
   let n = 0;
   for (const [apiName, rate] of got) {
     const site = lookup.get(norm(apiName));
@@ -134,8 +146,7 @@ for (let i = idx(start); i <= idx(end); i++) {
     else kept++;
   }
   monthsWithData.push(k);
-  console.log(`  ${k}  ${got.size} utilities from API, ${n} written`);
-  await sleep(150);
+  console.log(`  ${k}  ${got.size} utilities, ${n} written`);
 }
 
 // ---- write ---------------------------------------------------------------
