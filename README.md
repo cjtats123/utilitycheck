@@ -6,8 +6,7 @@ Static single-page site (no build step). Leaflet and map tiles load from CDNs, s
 **Drag & drop:** Netlify → Add new site → Deploy manually → drop this folder.
 **Git:** push to GitHub, then Add new site → Import from Git. Build command: *(empty)*. Publish directory: `.`
 
-## Before going live
-In `index.html`, replace `FORM_REP` and `FORM_BILL` (search `REPLACE_`) with your real Google Form links.
+## Data
 Rates live in the `RATES` object in `index.html` as `RATES[utility][YYYY-MM]` (source: PRESYO-PH). The month picker updates automatically from whatever months are in there.
 
 ## Import rates from PRESYO-PH

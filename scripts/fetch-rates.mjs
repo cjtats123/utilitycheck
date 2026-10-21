@@ -38,7 +38,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // ---- name matching (API name -> index.html name) ----------------------------
 const ROMAN = { I: "1", II: "2", III: "3", IV: "4", V: "5" };
-const ALIASES = { NUVELCO: "NUVELECO" }; // API spelling differences, normalized form
+const ALIASES = { NUVELCO: "NUVELECO", SEZ: "SUBIC ENERZONE" }; // API spelling differences, normalized form
 function norm(name) {
   let s = String(name).toUpperCase().replace(/\s*-\s*/g, " ").replace(/\bAREA\s+/g, "A").replace(/\s+/g, " ").trim();
   s = s.split(" ").map(t => ROMAN[t] || t).join(" ");

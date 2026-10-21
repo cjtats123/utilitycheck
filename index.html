@@ -39,13 +39,11 @@ input{flex:1;min-width:180px}
 .na{color:var(--mu);font-style:italic}
 details{margin-top:4px;font-size:.82rem}summary{cursor:pointer;color:var(--bl)}
 @media(prefers-color-scheme:dark){summary{color:#8fb0ff}}
-.ac{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.ac a{font-size:.75rem;padding:4px 10px;border:1px solid var(--bd);border-radius:8px;color:var(--tx);text-decoration:none}
-.ac a:hover,.ac a:focus-visible{border-color:var(--bl);outline:none}
 footer a{color:var(--bl)}
 footer{color:var(--mu);font-size:.8rem;margin-top:24px}
 #map{background:#bcd9f0;height:42vh;min-height:260px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;z-index:0}
 .leg{font-size:.78rem;color:var(--mu);margin:0 0 4px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:baseline}
+.dt{margin-top:8px;font-size:.78rem;line-height:1.5}.dt div{display:flex;gap:6px}.dt span{color:var(--mu,#777);min-width:62px}.dt a{color:var(--bl);word-break:break-all}.dt em{font-style:normal;opacity:.7}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--tx)}.leaflet-popup-content{margin:8px}.leaflet-popup-content .c{border:0;padding:2px}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}}
 :root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}
@@ -252,8 +250,12 @@ map.createPane("land").style.zIndex=150;
 LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap contributors"}).addTo(map);
 }
 const IS={L:"Luzon",V:"Visayas",M:"Mindanao"};let F="all";const $=x=>document.getElementById(x);
-// Google Forms placeholders: replace with your real form links
-const FORM_REP="https://forms.google.com/REPLACE_UTILITY_REP_FORM",FORM_BILL="https://forms.google.com/REPLACE_CONSUMER_BILL_FORM";
+// DET[utility]=[officialWebsite,officialFacebook]; null or missing = n/a. Only add links you have verified.
+const DET={
+"MERALCO":["https://www.meralco.com.ph","https://www.facebook.com/meralco"],
+"NORDECO":["https://nordeco.ph",null]
+};
+const lk=v=>v&&/^https:\/\//.test(v)?`<a href="${v}" target="_blank" rel="noopener">${v.replace(/^https:\/\/(www\.)?/,"")}</a>`:"<em>n/a</em>";
 const SRC={utility:{l:"Verified by utility",k:1},official:{l:"Official advisory",k:2},community:{l:"Community-reported (unverified)",k:3},presyo:{l:"Via PRESYO-PH (ICSC)",k:2}};
 const PU="https://presyo.icsc.ngo/national";
 // RATES[utility][YYYY-MM] = residential rate in PHP/kWh (source: PRESYO-PH). To add a month, add "YYYY-MM":rate to each utility.
@@ -267,6 +269,12 @@ const RATES={
 "PENELCO":{"2023-01":13.0963,"2023-02":13.8897,"2023-03":12.9506,"2023-04":11.8492,"2023-05":11.0135,"2023-06":10.3593,"2023-07":9.9099,"2023-08":10.47,"2023-09":11.01,"2023-10":10.2,"2023-11":9.18,"2023-12":9.73,"2024-01":9.84,"2024-02":10.03,"2024-03":10.89,"2024-04":10.19,"2024-05":8.48,"2024-06":8.71,"2024-07":8.37,"2024-08":9.51,"2024-09":9.71,"2024-10":9.87,"2024-11":10.09,"2024-12":10,"2025-01":9.77,"2025-02":10,"2025-03":9.11,"2025-04":9.62,"2025-05":9.41,"2025-06":7.65,"2025-07":8.52,"2025-08":9.05,"2025-09":9.1,"2025-10":8.65,"2025-11":10.34,"2025-12":8.79,"2026-01":9.7448,"2026-02":11.1062,"2026-03":11.1998,"2026-04":11.3848,"2026-05":10.3313,"2026-06":11.5123,"2026-07":12.0586,"2026-08":12.2469,"2026-09":11.2434},
 "CEDC":{"2023-01":7.15,"2023-02":6.18,"2023-03":6.42,"2023-04":6.39,"2023-05":6.8,"2023-06":6.99,"2023-07":6.6,"2023-08":6.11,"2023-09":6.1,"2023-10":6.02,"2023-11":6.57,"2023-12":5.9,"2024-01":5.94,"2024-02":5.9,"2024-03":6.18,"2024-04":6.19,"2024-05":6.15,"2024-06":7.32,"2024-07":6.23,"2024-08":6.43,"2024-09":7.14,"2024-10":6.14,"2024-11":6.2,"2024-12":6.12,"2025-01":5.93,"2025-02":5.74,"2025-03":5.96,"2025-04":6.87,"2025-05":6.2,"2025-06":6.04,"2025-07":6.13,"2025-08":6.2,"2025-09":6.25,"2025-10":5.92,"2025-11":6.51,"2025-12":6.18,"2026-01":6.06,"2026-02":7.1,"2026-03":7.1,"2026-04":7.64,"2026-05":6.2,"2026-06":7.9,"2026-07":6.86,"2026-08":7.54},
 "Subic Enerzone":null,
+"CASELCO":null,
+"FBPC":null,
+"LUBELCO":null,
+"NORDECO":null,
+"PAMES":null,
+"SIASELCO":null,
 "ABRECO":{"2023-01":16.93,"2023-02":15.76,"2023-03":14.37,"2023-04":13.22,"2023-05":13.81,"2023-07":13.87,"2023-08":15.44,"2023-09":10.4,"2023-10":11.76,"2023-11":13.01,"2023-12":11.69,"2024-01":11.38,"2024-02":11.29,"2024-03":11.83,"2024-04":9.674,"2024-05":13.68,"2024-06":14.25,"2024-07":13.03,"2024-08":11.92,"2024-09":12.69,"2026-02":11.52,"2026-03":12.2779,"2026-04":11.8991,"2026-05":12.8049,"2026-06":11.8207,"2026-07":13.2815,"2026-08":13.7009,"2026-09":13.5161},
 "APELCO":null,
 "BENECO":{"2023-01":10.4426,"2023-02":10.3256,"2023-03":10.1103,"2023-04":10.1109,"2023-05":9.7905,"2023-06":9.8,"2023-07":9.7,"2023-08":9.64,"2023-09":9.64,"2023-10":9.63,"2023-11":9.82,"2023-12":9.77,"2024-01":9.41,"2024-02":9.62,"2024-03":10.08,"2024-04":10.06,"2024-05":10.28,"2024-06":11.4,"2024-07":9.95,"2024-08":11.25,"2024-09":11.14,"2024-10":10.76,"2024-11":10.37,"2024-12":10.97,"2025-01":10.77,"2025-02":10.33,"2025-03":9.79,"2025-04":11.22,"2025-05":10.08,"2025-06":9.82,"2025-07":10.11,"2025-08":9.88,"2025-09":8.25,"2025-10":7.55,"2025-11":8.71,"2025-12":8.36,"2026-01":7.6994,"2026-02":8.1315,"2026-03":8.1702,"2026-04":9.6,"2026-05":9.7041,"2026-06":11.645,"2026-07":12.29,"2026-08":12.61,"2026-09":11.8038},
@@ -416,7 +424,7 @@ $("ch").onclick=e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.
 function card(u){const x=rate(u.n),old=isOld(x),lt=latest(u.n);let r=MO!=="latest"&&lt&&!x?`<div class="rt na">No data for ${fm(MO)}. Latest: ₱${lt.r.toFixed(2)} (${fm(lt.m)})</div>`:'<div class="rt na">Rate not yet available</div>';
 if(x){const bd=x.b?`<details><summary>View breakdown</summary>${Object.entries(x.b).map(([k,v])=>`${k}: ₱${(+v).toFixed(4)}`).join("<br>")}</details>`:"";
 r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/kWh</small></span><span class="bg s-${x.s}">${SRC[x.s].l}</span><br><small>Billing month: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}${x.u?` · <a href="${x.u}" target="_blank" rel="noopener">Source</a>`:""}</small>${bd}</div>`}
-return `<div data-n="${u.n}" class="c ${u.t}${old?" old":""}"><span class="tg">${u.t==="P"?"Private":"Co-op"}</span><b>${u.n}</b><small>${u.a} · ${IS[u.i]}</small>${r}<div class="ac"><a href="${FORM_REP}" target="_blank" rel="noopener">Submit/Update rate (utility rep)</a><a href="${FORM_BILL}" target="_blank" rel="noopener">Report my bill rate (consumer)</a></div></div>`}
+return `<div data-n="${u.n}" class="c ${u.t}${old?" old":""}"><span class="tg">${u.t==="P"?"Private":"Co-op"}</span><b>${u.n}</b><small>${u.a} · ${IS[u.i]}</small>${r}<div class="dt"><div><span>Website</span>${lk((DET[u.n]||[])[0])}</div><div><span>Facebook</span>${lk((DET[u.n]||[])[1])}</div></div></div>`}
 function row(u){const x=rate(u.n),old=isOld(x);
 const t=`${u.n} · ${u.a} · ${IS[u.i]}`+(x?` · ${SRC[x.s].l}, ${fm(x.m)}${old?" (outdated)":""}`:(MO!=="latest"?" · No data for "+fm(MO):" · Rate not yet available"));
 return `<div data-n="${u.n}" class="r ${u.t}${old?" old":""}" title="${t}"><b>${u.n}</b><span class="p${x?"":" na"}">${x?"₱"+x.r.toFixed(2):"—"}</span></div>`}
