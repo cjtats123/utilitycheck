@@ -113,6 +113,27 @@ dialog{max-width:min(560px,calc(100vw - 32px));padding:18px 20px;background:var(
 dialog::backdrop{background:rgba(5,10,25,.55)}
 dialog h2{margin:0 0 8px;font-size:1.05rem}dialog p{margin:0 0 14px;font-size:.88rem;color:var(--mu)}
 
+/* rate history */
+.hb{width:100%;margin-top:10px;padding:8px 12px;font-size:.85rem}
+#hd{width:min(680px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
+.dh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.dh h2{margin:0}.dh small{color:var(--mu)}
+.x{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:var(--card);font-size:16px;line-height:1;padding:0}
+.hv{display:flex;align-items:baseline;gap:10px;min-height:36px}
+.hv b{font-size:1.6rem;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.hv span{color:var(--mu);font-size:.85rem}
+#hc svg{display:block;width:100%;height:auto;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:crosshair}
+.gl{stroke:var(--bd);stroke-width:1}.ax{fill:var(--mu);font-size:16px}
+.ln{fill:none;stroke:var(--bl);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.ar{fill:var(--bl);opacity:.1}
+.hp .ln{stroke:var(--rd)}.hp .ar{fill:var(--rd)}.hp .dot{fill:var(--rd)}
+.dot{fill:var(--bl)}.cur line{stroke:var(--mu);stroke-dasharray:3 3}.cur circle{fill:var(--card);stroke:var(--bl);stroke-width:3}.hp .cur circle{stroke:var(--rd)}
+#hd .chips{flex-wrap:wrap;overflow:visible;margin:8px 0;padding:0}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:4px 0 10px}
+.st div{padding:8px 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg)}
+.st small{display:block;color:var(--mu);font-size:.72rem}.st b{font-variant-numeric:tabular-nums}
+.up{color:var(--rdt)}.dn{color:var(--su)}
+#ht{max-height:240px;overflow-y:auto;margin-top:6px;border:1px solid var(--bd);border-radius:10px}
+#ht div{display:flex;justify-content:space-between;gap:10px;padding:6px 12px;font-size:.85rem;font-variant-numeric:tabular-nums}
+#ht div+div{border-top:1px solid var(--bd)}
 @media(min-width:560px) and (max-width:899px){.bar{grid-template-columns:repeat(4,1fr)}}
 @media(max-height:520px) and (max-width:899px){.mp{position:static}}
 @media(min-width:900px){
@@ -161,6 +182,12 @@ input[type=search],select{font-size:14px}
 <dialog id="dl" aria-labelledby="dh"><h2 id="dh">About these rates</h2>
 <p>List compiled from general knowledge and may be incomplete or outdated; verify with NEA (cooperatives) and ERC (private utilities). Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Rates marked "Via PRESYO-PH" are monthly residential averages for the billing month selected, from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), not a utility bill. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</p>
 <button class="btn" id="dc" type="button">Close</button></dialog>
+<dialog id="hd" aria-labelledby="hn"><div class="dh"><div><h2 id="hn"></h2><small id="hs"></small></div><button class="x" id="hx" type="button" aria-label="Close">✕</button></div>
+<div class="hv"><b id="h1"></b><span id="h2"></span></div>
+<div id="hc"></div>
+<div class="chips" id="hrg" role="group" aria-label="Range"><button type="button" class="chip" data-r="12" aria-pressed="false">12 months</button><button type="button" class="chip" data-r="24" aria-pressed="false">24 months</button><button type="button" class="chip" data-r="all" aria-pressed="true">All</button></div>
+<div class="st" id="hst"></div>
+<details><summary>All months</summary><div id="ht"></div></details></dialog>
 <script>
 // code|type(P=private,C=cooperative)|island(L/V/M)|area
 const R=`MERALCO|P|L|Metro Manila, Rizal, Cavite, Bulacan, Laguna, Batangas, Quezon|14.600|121.000
@@ -622,10 +649,42 @@ const x=rate(u.n),old=isOld(x),lt=latest(u.n),d=DET[u.n]||[];let r;
 if(x){const su=safe(x.u),bd=x.b?`<details><summary>View breakdown</summary>${Object.entries(x.b).map(([k,v])=>`${esc(k)}: ₱${(+v).toFixed(4)}`).join("<br>")}</details>`:"";
 r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/kWh</small></span><span class="bg s-${x.s}">${SRC[x.s].l}</span><br><small>Billing month: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}${su?` · <a href="${esc(su)}" target="_blank" rel="noopener">Source</a>`:""}</small>${bd}</div>`}
 else r=MO!=="latest"&&lt?`<div class="rt na">No data for ${fm(MO)}. Latest: ₱${lt.r.toFixed(2)} (${fm(lt.m)})</div>`:'<div class="rt na">Rate not yet available</div>';
-return `<div class="c ${u.t}${old?" old":""}"><div class="hd"><b>${esc(u.n)}</b><span class="tg">${u.t==="P"?"Private":"Co-op"}</span></div><small>${esc(u.a)} · ${IS[u.i]}</small>${r}<div class="dt"><div><span>Website</span>${lk(d[0])}</div><div><span>Facebook</span>${lk(d[1])}</div></div></div>`}
+return `<div class="c ${u.t}${old?" old":""}"><div class="hd"><b>${esc(u.n)}</b><span class="tg">${u.t==="P"?"Private":"Co-op"}</span></div><small>${esc(u.a)} · ${IS[u.i]}</small>${r}<div class="dt"><div><span>Website</span>${lk(d[0])}</div><div><span>Facebook</span>${lk(d[1])}</div></div>${(HK[u.n]||[]).length?`<button type="button" class="btn hb" data-h="${esc(u.n)}">Rate history</button>`:""}</div>`}
 
 function row(u){const x=rate(u.n),old=isOld(x);
 return `<button type="button" class="r ${u.t}${old?" old":""}${u.n===ACT?" on":""}" data-n="${esc(u.n)}"><span class="n"><b>${esc(u.n)}</b><small>${esc(u.a)} · ${IS[u.i]}${old?" · outdated":""}</small></span><span class="p${x?"":" na"}">${x?"₱"+x.r.toFixed(2):"—"}</span></button>`}
+
+/* ---- rate history ---- */
+let HN=null,HRG="all";
+const mkey=i=>Math.floor(i/12)+"-"+String(i%12+1).padStart(2,"0");
+const fs=i=>new Date(Math.floor(i/12),i%12,1).toLocaleString("en-PH",{month:"short",year:"2-digit"});
+const peso=r=>"₱"+r.toFixed(2);
+function hist(n){const o=[];for(const m of[...(HK[n]||[])].reverse()){const x=pick(n,m);if(x)o.push({i:ym(m),r:x.r})}return o}
+function openHist(n){const u=BY.get(n);if(!u)return;HN=n;HRG="all";
+$("hn").textContent=n;$("hs").textContent=u.a+" · "+IS[u.i]+" · "+(u.t==="P"?"Private":"Co-op");
+for(const b of $("hrg").children)b.setAttribute("aria-pressed",b.dataset.r==="all");
+$("hd").classList.toggle("hp",u.t==="P");renderHist();$("hd").showModal()}
+function renderHist(){
+const d=hist(HN);
+if(!d.length){$("hc").innerHTML='<p class="empty">No rate history yet.</p>';$("hst").innerHTML="";$("ht").innerHTML="";$("h1").textContent="—";$("h2").textContent="";return}
+const last=d[d.length-1],v=HRG==="all"?d:d.filter(p=>p.i>last.i-+HRG);
+const W=640,H=260,pl=52,pr=16,pt=16,pb=34,lo=Math.min(...v.map(p=>p.r)),hi=Math.max(...v.map(p=>p.r));
+const pad=(hi-lo)*.12||1,y0=Math.max(0,lo-pad),y1=hi+pad,x0=v[0].i,x1=last.i,span=x1-x0;
+const X=i=>pl+(span?(i-x0)/span:.5)*(W-pl-pr),Y=r=>pt+(1-(r-y0)/(y1-y0))*(H-pt-pb);
+let g="";for(let k=0;k<=4;k++){const r=y0+(y1-y0)*k/4,y=Y(r);g+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}"/><text class="ax" x="${pl-7}" y="${y+5}" text-anchor="end">${r.toFixed(1)}</text>`}
+const step=Math.max(1,Math.ceil(span/5));for(let i=x0;i<=x1;i+=step)g+=`<text class="ax" x="${X(i)}" y="${H-9}" text-anchor="${i===x0&&span?"start":"middle"}">${fs(i)}</text>`;
+const pts=v.map(p=>X(p.i).toFixed(1)+","+Y(p.r).toFixed(1)),base=Y(y0);
+const line=v.length>1?`<polygon class="ar" points="${X(x0)},${base} ${pts.join(" ")} ${X(x1)},${base}"/><polyline class="ln" points="${pts.join(" ")}"/>`:"";
+const dots=v.length<=24?v.map(p=>`<circle class="dot" cx="${X(p.i)}" cy="${Y(p.r)}" r="3"/>`).join(""):"";
+$("hc").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Rate history chart">${g}${line}${dots}<g class="cur"><line y1="${pt}" y2="${H-pb}"/><circle r="6"/></g></svg>`;
+const svg=$("hc").firstChild,cur=svg.querySelector(".cur");
+const show=p=>{cur.setAttribute("transform",`translate(${X(p.i)} 0)`);cur.lastChild.setAttribute("cy",Y(p.r));cur.firstChild.setAttribute("x1",0);cur.firstChild.setAttribute("x2",0);
+$("h1").textContent=peso(p.r);$("h2").textContent=new Date(Math.floor(p.i/12),p.i%12,1).toLocaleString("en-PH",{month:"long",year:"numeric"})};
+const move=e=>{const rc=svg.getBoundingClientRect(),sx=(e.clientX-rc.left)/rc.width*W;let b=v[0];for(const p of v)if(Math.abs(X(p.i)-sx)<Math.abs(X(b.i)-sx))b=p;show(b)};
+svg.addEventListener("pointermove",move);svg.addEventListener("pointerdown",move);svg.addEventListener("pointerleave",()=>show(last));show(last);
+const mn=v.reduce((a,p)=>p.r<a.r?p:a),mx=v.reduce((a,p)=>p.r>a.r?p:a),av=v.reduce((s,p)=>s+p.r,0)/v.length,ch=last.r-v[0].r,pc=v[0].r?ch/v[0].r*100:0;
+$("hst").innerHTML=`<div><small>Change over range</small><b class="${ch>0?"up":ch<0?"dn":""}">${v.length>1?(ch>=0?"▲ +":"▼ ")+ch.toFixed(2)+" ("+(pc>=0?"+":"")+pc.toFixed(1)+"%)":"—"}</b></div><div><small>Lowest · ${fs(mn.i)}</small><b>${peso(mn.r)}</b></div><div><small>Highest · ${fs(mx.i)}</small><b>${peso(mx.r)}</b></div><div><small>Average</small><b>${peso(av)}</b></div>`;
+$("ht").innerHTML=[...d].reverse().map((p,k,a)=>{const q=a[k+1],df=q?p.r-q.r:0;return`<div><span>${fm(mkey(p.i))}</span><span>${peso(p.r)} <small class="${df>0?"up":df<0?"dn":""}">${q?(df>0?"▲":df<0?"▼":"–")+Math.abs(df).toFixed(2):""}</small></span></div>`}).join("")}
 
 /* ---- filter + render (no timers, at most once per frame) ---- */
 let raf=0,lastKey=null;
@@ -680,7 +739,7 @@ LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attrib
 ML=LL.layerGroup().addTo(map);
 for(const u of R){u.fo=rate(u.n)?.95:.3;u.mk=LL.circleMarker([u.la,u.ln],mkStyle(u));u.mk.un=u.n;
 u.mk.bindPopup(()=>card(u),{minWidth:240,maxWidth:300,autoPanPaddingTopLeft:[10,50],autoPanPaddingBottomRight:[10,10]})}
-map.on("popupopen",e=>{const s=e.popup._source;e.popup.options.maxHeight=Math.max(140,map.getSize().y-90);setActive(s&&s.un)});
+map.on("popupopen",e=>{const s=e.popup._source;e.popup.options.maxHeight=Math.max(140,map.getSize().y-90);setActive(s&&s.un);const pe=e.popup.getElement&&e.popup.getElement(),hb=pe&&pe.querySelector("[data-h]");if(hb)hb.onclick=()=>openHist(hb.dataset.h)});
 map.on("popupclose",()=>setActive(null));
 if("ResizeObserver"in window)new ResizeObserver(()=>map.invalidateSize({animate:false})).observe(el);else addEventListener("resize",()=>map.invalidateSize());
 lastKey="all|||false";
@@ -696,7 +755,7 @@ for(const x of $("ch").children)x.setAttribute("aria-pressed",x===b);schedule()}
 $("g").addEventListener("click",e=>{
 if(e.target.closest("[data-reset]")){F="all";$("q").value="";$("vs").value="all";$("so").value="az";$("hr").checked=false;lastKey=null;
 for(const x of $("ch").children)x.setAttribute("aria-pressed",x.dataset.f==="all");schedule();return}
-const b=e.target.closest(".r");if(!b)return;const u=BY.get(b.dataset.n);if(!u||!map||!u.on)return;
+const b=e.target.closest(".r");if(!b)return;const u=BY.get(b.dataset.n);if(!u)return;if(!map){openHist(u.n);return}if(!u.on)return;
 const ll=[u.la,u.ln];
 if(!(map.getZoom()>=8&&map.getBounds().pad(-.2).contains(ll)))map.setView(ll,Math.max(map.getZoom(),9),{animate:false});
 u.mk.openPopup()});
@@ -710,6 +769,8 @@ const icon=()=>{const d=dark(),b=$("tb");b.innerHTML=d?SUN:MOON;b.setAttribute("
 $("tb").addEventListener("click",()=>{const t=dark()?"light":"dark";root.dataset.theme=t;try{localStorage.setItem("uc-theme",t)}catch(e){}icon()});
 if(mq.addEventListener)mq.addEventListener("change",icon);icon();
 
+$("hrg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;HRG=b.dataset.r;for(const x of $("hrg").children)x.setAttribute("aria-pressed",x===b);renderHist()});
+$("hx").addEventListener("click",()=>$("hd").close());$("hd").addEventListener("click",e=>{if(e.target===$("hd"))$("hd").close()});
 /* disclaimer */
 const dl=$("dl");$("ab").addEventListener("click",()=>dl.showModal());$("dc").addEventListener("click",()=>dl.close());
 dl.addEventListener("click",e=>{if(e.target===dl)dl.close()});
