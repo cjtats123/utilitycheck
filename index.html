@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UtilityCheck – Philippine Electric Utilities</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#0b1b3f;--mu:#5b6684;--bd:#dde3f0;--bl:#0038a8;--rd:#ce1126;--yl:#fcd116;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:linear-gradient(135deg,#0038a8 0%,#0a2a7a 60%,#ce1126 140%);color:#fff;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 38px,rgba(252,209,22,.07) 38px 40px)}
+.hw{max-width:960px;margin:0 auto;padding:26px 16px 30px;position:relative;z-index:1;display:flex;gap:14px;align-items:center}
+.hw svg{flex:none;width:64px;height:64px}h1{margin:0;font-size:2rem;letter-spacing:-.02em}h1 span{color:var(--yl)}
+.hw p{margin:2px 0 0;opacity:.9}
+.stripe{height:6px;background:linear-gradient(90deg,var(--bl) 33%,var(--yl) 33% 66%,var(--rd) 66%)}
+main{max-width:960px;margin:0 auto;padding:16px 16px 48px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+input,select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+input{flex:1;min-width:180px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:5px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.chip.on{background:var(--bl);color:#fff;border-color:var(--bl)}
+.cnt{color:var(--mu);font-size:.85rem;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.c{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--bl);border-radius:10px;padding:10px 12px}
+.c.P{border-left-color:var(--rd)}.c.C{border-left-color:var(--bl)}
+.c b{display:block}.c small{color:var(--mu)}
+.tg{float:right;font-size:.68rem;padding:1px 8px;border-radius:99px;background:color-mix(in srgb,var(--bl) 12%,transparent);color:var(--bl);font-weight:600}
+.P .tg{background:color-mix(in srgb,var(--rd) 12%,transparent);color:var(--rd)}
+@media(prefers-color-scheme:dark){.tg{color:#8fb0ff}.P .tg{color:#ff8a98}}
+.bar select{flex:none}.tgl{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--mu);margin:0 0 10px}
+.rt{margin-top:8px;padding-top:8px;border-top:1px dashed var(--bd)}
+.pr{font-size:1.35rem;font-weight:700;letter-spacing:-.02em}.pr small{font-size:.75rem;font-weight:400}
+.bg{display:inline-block;font-size:.68rem;font-weight:600;padding:1px 8px;border-radius:99px;margin-left:6px;vertical-align:middle;border:1px solid currentColor}
+.s-utility{color:#0a7a3d}.s-official{color:var(--bl)}.s-community{color:#a15c00}
+@media(prefers-color-scheme:dark){.s-utility{color:#5fd68f}.s-official{color:#8fb0ff}.s-community{color:#ffc266}}
+.old .pr,.old .bg{opacity:.45}.old .pr{text-decoration:line-through}.od{color:var(--rd);font-weight:600}
+.na{color:var(--mu);font-style:italic}
+details{margin-top:4px;font-size:.82rem}summary{cursor:pointer;color:var(--bl)}
+@media(prefers-color-scheme:dark){summary{color:#8fb0ff}}
+.ac{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.ac a{font-size:.75rem;padding:4px 10px;border:1px solid var(--bd);border-radius:8px;color:var(--tx);text-decoration:none}
+.ac a:hover,.ac a:focus-visible{border-color:var(--bl);outline:none}
+footer a{color:var(--bl)}
+footer{color:var(--mu);font-size:.8rem;margin-top:24px}
+#map{background:#bcd9f0;height:58vh;min-height:320px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;z-index:0}
+.leg{font-size:.8rem;color:var(--mu);margin:0 0 12px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:baseline}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--tx)}.leaflet-popup-content{margin:8px}.leaflet-popup-content .c{border:0;padding:2px}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}}
+:root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}
+.c[data-n]{cursor:pointer}.land{fill:#eef0dc;fill-opacity:1;stroke:#7f98b8;stroke-width:1}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #map{background:#16264d}:root:not([data-theme="light"]) .land{fill:#2b3d6e;stroke:#4a5f96}}
+:root[data-theme="dark"] #map{background:#16264d}:root[data-theme="dark"] .land{fill:#2b3d6e;stroke:#4a5f96}
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script></head><body>
+<header><div class="hw">
+<svg viewBox="0 0 64 64" aria-label="UtilityCheck logo"><rect width="64" height="64" rx="16" fill="#fcd116"/><path d="M36 6 14 36h14l-4 22 26-32H35z" fill="#0038a8" opacity=".18"/><path d="M16 33l11 11 22-24" fill="none" stroke="#0038a8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="12" r="6" fill="#ce1126"/></svg>
+<div><h1>Utility<span>Check</span></h1><p>Every electric company &amp; cooperative in the Philippines, in one list.</p></div></div></header>
+<div class="stripe"></div>
+<main>
+<div id="map" role="application" aria-label="Map of Philippine electric utilities"></div>
+<p class="leg"><i style="background:#ce1126"></i>Private utility<i style="background:#0038a8"></i>Electric cooperative · Tap a dot for details</p>
+<div class="bar"><input type="search" id="q" placeholder="Search utility or province…">
+<select id="so" aria-label="Sort"><option value="az">Sort: A–Z</option><option value="lo">Cheapest first</option><option value="hi">Most expensive first</option></select>
+<select id="vs" aria-label="Verification status"><option value="all">Any status</option><option value="utility">Verified by utility</option><option value="official">Official advisory</option><option value="community">Community-reported</option></select></div>
+<div class="chips" id="ch"></div>
+<label class="tgl"><input type="checkbox" id="hr" style="flex:none;min-width:0"> Only utilities with a rate</label>
+<p class="cnt" id="cnt"></p>
+<div class="grid" id="g"></div>
+<footer>List compiled from general knowledge and may be incomplete or outdated. Always verify with NEA (cooperatives) and ERC (private utilities) before relying on it.</footer>
+<footer>Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</footer>
+</main>
+<script>
+// code|type(P=private,C=cooperative)|island(L/V/M)|area
+const R=`MERALCO|P|L|Metro Manila, Rizal, Cavite, Bulacan, Laguna, Batangas, Quezon|14.600|121.000
+SFELAPCO|P|L|San Fernando, Pampanga|15.030|120.690
+AEC|P|L|Angeles City, Pampanga|15.150|120.590
+CELCOR|P|L|Cabanatuan City, Nueva Ecija|15.490|120.970
+DECORP|P|L|Dagupan City, Pangasinan|16.040|120.330
+PENELCO|P|L|Bataan|14.680|120.540
+CEDC|P|L|Clark Freeport, Pampanga|15.170|120.540
+Subic Enerzone|P|L|Subic Bay Freeport|14.820|120.280
+ABRECO|C|L|Abra|17.600|120.700
+APELCO|C|L|Apayao|18.050|121.170
+BENECO|C|L|Benguet|16.400|120.590
+IFELCO|C|L|Ifugao|16.830|121.100
+KAELCO|C|L|Kalinga|17.450|121.450
+MOPRECO|C|L|Mountain Province|17.050|120.970
+INEC|C|L|Ilocos Norte|18.170|120.710
+ISECO|C|L|Ilocos Sur|17.350|120.450
+LUELCO|C|L|La Union|16.620|120.320
+CENPELCO|C|L|Central Pangasinan|15.950|120.400
+PANELCO I|C|L|Pangasinan|16.100|120.450
+PANELCO III|C|L|Pangasinan|15.900|120.350
+BATANELCO|C|L|Batanes|20.450|121.970
+CAGELCO I|C|L|Cagayan|17.950|121.750
+CAGELCO II|C|L|Cagayan|17.600|121.730
+ISELCO I|C|L|Isabela|17.000|121.850
+ISELCO II|C|L|Isabela|16.750|121.600
+NUVELECO|C|L|Nueva Vizcaya|16.450|121.150
+QUIRELCO|C|L|Quirino|16.450|121.530
+NEECO I|C|L|Nueva Ecija|15.700|121.050
+NEECO II Area 1|C|L|Nueva Ecija|15.761|120.984
+NEECO II Area 2|C|L|Nueva Ecija|15.573|121.061
+PELCO I|C|L|Pampanga|15.050|120.650
+PELCO II|C|L|Pampanga|15.111|120.584
+PELCO III|C|L|Pampanga|14.923|120.661
+TARELCO I|C|L|Tarlac|15.480|120.600
+TARELCO II|C|L|Tarlac|15.541|120.534
+ZAMECO I|C|L|Zambales|15.350|120.000
+ZAMECO II|C|L|Zambales|15.411|119.934
+AURELCO|C|L|Aurora|15.750|121.550
+BATELEC I|C|L|Batangas|13.950|121.050
+BATELEC II|C|L|Batangas|14.011|120.984
+FLECO|C|L|First Laguna|14.280|121.450
+QUEZELCO I|C|L|Quezon|14.000|122.000
+QUEZELCO II|C|L|Quezon|14.061|121.934
+MARELCO|C|L|Marinduque|13.400|121.950
+OMECO|C|L|Occidental Mindoro|13.000|120.850
+ORMECO|C|L|Oriental Mindoro|12.850|121.250
+PALECO|C|L|Palawan|9.850|118.750
+BISELCO|C|L|Busuanga, Palawan|12.200|120.100
+ROMELCO|C|L|Romblon|12.550|122.300
+TIELCO|C|L|Tablas Island, Romblon|12.400|122.100
+CASURECO I|C|L|Camarines Sur|13.550|123.200
+CASURECO II|C|L|Camarines Sur|13.611|123.134
+CASURECO III|C|L|Camarines Sur|13.423|123.211
+CASURECO IV|C|L|Camarines Sur|13.674|123.295
+CANORECO|C|L|Camarines Norte|14.200|122.700
+FICELCO|C|L|Catanduanes|13.700|124.250
+SORECO I|C|L|Sorsogon|12.950|124.000
+SORECO II|C|L|Sorsogon|13.011|123.934
+MASELCO|C|V|Masbate|12.350|123.600
+TISELCO|C|L|Ticao Island, Masbate|12.550|123.700
+VECO|P|V|Metro Cebu|10.320|123.900
+MECO|P|V|Mactan, Cebu|10.300|123.970
+Balamban Enerzone|P|V|Balamban, Cebu|10.470|123.720
+BLCI|P|V|Bohol Light, Tagbilaran|9.650|123.850
+CEBECO I|C|V|Cebu|10.200|123.650
+CEBECO II|C|V|Cebu|10.500|123.950
+CEBECO III|C|V|Cebu|9.850|123.350
+BOHECO I|C|V|Bohol|9.900|124.280
+BOHECO II|C|V|Bohol|9.961|124.214
+AKELCO|C|V|Aklan|11.700|122.350
+ANTECO|C|V|Antique|11.150|122.050
+CAPELCO|C|V|Capiz|11.450|122.750
+ILECO I|C|V|Iloilo|10.950|122.450
+ILECO II|C|V|Iloilo|11.011|122.384
+ILECO III|C|V|Iloilo|10.823|122.461
+GUIMELCO|C|V|Guimaras|10.600|122.600
+NOCECO|C|V|Negros Occidental|10.450|123.000
+CENECO|C|V|Central Negros|10.550|122.950
+NONECO|C|V|Northern Negros|10.900|123.100
+NORECO II|C|V|Negros Oriental|9.300|123.300
+LEYECO II|C|V|Leyte|11.000|124.600
+LEYECO III|C|V|Leyte|11.061|124.534
+LEYECO IV|C|V|Leyte|10.873|124.611
+LEYECO V|C|V|Leyte|11.124|124.695
+SOLECO|C|V|Southern Leyte|10.300|125.000
+BILECO|C|V|Biliran|11.550|124.450
+SAMELCO I|C|V|Samar|11.800|124.900
+SAMELCO II|C|V|Samar|11.861|124.834
+NORSAMELCO|C|V|Northern Samar|12.400|124.600
+ESAMELCO|C|V|Eastern Samar|11.500|125.450
+DLPC|P|M|Davao Light, Davao City|7.070|125.600
+CEPALCO|P|M|Cagayan de Oro, Misamis Oriental|8.480|124.650
+ILPI|P|M|Iligan Light &amp; Power|8.230|124.240
+MORESCO I|C|M|Misamis Oriental|8.500|124.800
+MORESCO II|C|M|Misamis Oriental|8.561|124.734
+MOELCI I|C|M|Misamis Occidental|8.500|123.800
+MOELCI II|C|M|Misamis Occidental|8.561|123.734
+FIBECO|C|M|Bukidnon|7.900|125.000
+BUSECO|C|M|Bukidnon Second|8.100|125.100
+CAMELCO|C|M|Camiguin|9.170|124.720
+LANECO|C|M|Lanao del Norte|8.050|124.000
+LASURECO|C|M|Lanao del Sur|7.850|124.250
+ZAMCELCO|C|M|Zamboanga City|6.920|122.080
+ZANECO|C|M|Zamboanga del Norte|8.450|123.000
+ZAMSURECO I|C|M|Zamboanga del Sur|7.800|123.300
+ZAMSURECO II|C|M|Zamboanga del Sur|7.861|123.234
+ANECO|C|M|Agusan del Norte|8.950|125.550
+ASELCO|C|M|Agusan del Sur|8.400|126.000
+SURNECO|C|M|Surigao del Norte|9.750|125.600
+SIARELCO|C|M|Siargao|9.850|126.050
+DIELCO|C|M|Dinagat Islands|10.100|125.600
+SURSECO I|C|M|Surigao del Sur|8.700|126.200
+SURSECO II|C|M|Surigao del Sur|8.761|126.134
+DASURECO|C|M|Davao del Sur|6.750|125.350
+DANECO|C|M|Davao del Norte|7.450|125.750
+DORELCO|C|M|Davao Oriental|7.000|126.300
+COTELCO|C|M|Cotabato|7.200|124.250
+SOCOTECO I|C|M|South Cotabato|6.350|124.850
+SOCOTECO II|C|M|South Cotabato|6.411|124.784
+SUKELCO|C|M|Sultan Kudarat|6.550|124.400
+MAGELCO|C|M|Maguindanao|6.950|124.350
+BASELCO|C|M|Basilan|6.550|122.000
+SULECO|C|M|Sulu|6.000|121.000
+TAWELCO|C|M|Tawi-Tawi|5.100|119.900`.split("\n").map(l=>{const a=l.split("|");return{n:a[0],t:a[1],i:a[2],a:a[3],la:+a[4],ln:+a[5]}});
+const LL=L,map=LL.map("map",{center:[12.5,122.5],zoom:6,minZoom:5,maxBounds:[[3,114],[22.5,129]]}),ML=LL.layerGroup().addTo(map);
+map.createPane("land").style.zIndex=150;
+[[[18.5,120.6],[18.6,121.4],[18.3,122.2],[17.2,122.45],[16.2,122.3],[15.2,121.6],[14.6,121.9],[14.1,122.3],[14.1,122.9],[13.9,123.3],[13.2,123.7],[13.0,124.1],[12.6,124.0],[12.9,123.6],[13.5,123.2],[13.9,122.8],[13.7,122.3],[13.6,121.7],[13.8,121.05],[14.2,120.6],[14.5,120.6],[14.7,120.5],[14.5,120.4],[14.75,120.3],[15.3,119.9],[16.1,119.75],[16.4,120.3],[17.5,120.35],[18.4,120.55]],
+[[13.5,120.4],[13.5,121.5],[12.5,121.5],[12.2,121.1],[12.3,120.7],[13.0,120.3]],
+[[11.3,119.4],[11.1,119.6],[10.0,119.0],[9.0,118.2],[8.4,117.2],[8.7,117.1],[9.7,118.3],[10.6,119.0]],
+[[11.9,122.0],[11.9,122.8],[11.3,123.1],[10.7,122.6],[10.4,122.1],[11.2,121.9]],
+[[11.0,123.0],[10.8,123.5],[9.9,123.3],[9.1,123.2],[9.2,122.9],[10.0,122.8],[10.7,122.5]],
+[[11.2,123.95],[10.0,123.65],[9.5,123.3],[9.55,123.6],[10.3,124.05],[11.0,124.05]],
+[[10.15,124.1],[10.15,124.6],[9.8,124.6],[9.6,124.2],[9.7,123.85],[9.9,123.8]],
+[[11.5,124.4],[11.4,125.0],[10.5,125.2],[9.9,125.2],[10.3,124.8],[10.6,124.5],[10.9,124.3]],
+[[12.6,124.2],[12.5,125.4],[11.4,125.75],[10.9,125.6],[11.2,125.0],[11.5,124.5],[12.0,124.3]],
+[[12.7,123.3],[12.2,123.8],[11.9,123.5],[12.3,123.2]],
+[[9.8,125.5],[9.4,126.0],[8.5,126.5],[7.5,126.6],[6.9,126.3],[6.1,126.2],[5.95,125.4],[6.3,125.0],[6.1,124.6],[6.9,124.2],[7.3,123.7],[7.8,122.9],[7.0,122.1],[7.7,122.3],[8.2,123.0],[8.6,123.4],[8.2,124.2],[8.5,124.65],[8.9,125.4]]
+].forEach(p=>LL.polygon(p,{pane:"land",className:"land",interactive:false}).addTo(map));
+LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap contributors"}).addTo(map);
+const IS={L:"Luzon",V:"Visayas",M:"Mindanao"};let F="all";const $=x=>document.getElementById(x);
+// Google Forms placeholders: replace with your real form links
+const FORM_REP="https://forms.google.com/REPLACE_UTILITY_REP_FORM",FORM_BILL="https://forms.google.com/REPLACE_CONSUMER_BILL_FORM";
+const SRC={utility:{l:"Verified by utility",k:1},official:{l:"Official advisory",k:2},community:{l:"Community-reported (unverified)",k:3}};
+// Residential rates, ₱/kWh. null = "Rate not yet available". Fill in only from a real advisory.
+// Example: CEPALCO:{m:"2026-10",r:12.3456,s:"official",u:"https://link-to-advisory",b:{Generation:6.1,Transmission:1.2,Distribution:1.5,"System loss":0.5,"Taxes & others":3.0}}
+// s = "official" | "utility" | "community". Official and utility rates need u (advisory link or file). b is optional.
+const RATES={MERALCO:null,VECO:null,DLPC:null,CEPALCO:null,SFELAPCO:null,AEC:null,MECO:null,BLCI:null,ILPI:null,CELCOR:null};
+const ym=m=>{const p=m.split("-");return +p[0]*12+ +p[1]-1},now=new Date(),cur=now.getFullYear()*12+now.getMonth();
+const fm=m=>new Date(+m.slice(0,4),+m.slice(5,7)-1,1).toLocaleString("en-PH",{month:"long",year:"numeric"});
+function rate(n){const x=RATES[n];return x&&/^\d{4}-\d{2}$/.test(x.m)&&x.r>0&&SRC[x.s]&&(x.s==="community"||x.u)?x:null}
+const chips=[["all","All"],["P","Private"],["C","Cooperative"],["L","Luzon"],["V","Visayas"],["M","Mindanao"]];
+$("ch").innerHTML=chips.map(c=>`<button class="chip${c[0]==="all"?" on":""}" data-f="${c[0]}">${c[1]}</button>`).join("");
+$("ch").onclick=e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.f;[...$("ch").children].forEach(x=>x.classList.toggle("on",x===b));draw()};
+["q","so","vs","hr"].forEach(i=>$(i).oninput=draw);
+function card(u){const x=rate(u.n),old=x&&cur-ym(x.m)>2;let r='<div class="rt na">Rate not yet available</div>';
+if(x){const bd=x.b?`<details><summary>View breakdown</summary>${Object.entries(x.b).map(([k,v])=>`${k}: ₱${(+v).toFixed(4)}`).join("<br>")}</details>`:"";
+r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/kWh</small></span><span class="bg s-${x.s}">${SRC[x.s].l}</span><br><small>Billing month: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}${x.u?` · <a href="${x.u}" target="_blank" rel="noopener">Source</a>`:""}</small>${bd}</div>`}
+return `<div data-n="${u.n}" class="c ${u.t}${old?" old":""}"><span class="tg">${u.t==="P"?"Private":"Co-op"}</span><b>${u.n}</b><small>${u.a} · ${IS[u.i]}</small>${r}<div class="ac"><a href="${FORM_REP}" target="_blank" rel="noopener">Submit/Update rate (utility rep)</a><a href="${FORM_BILL}" target="_blank" rel="noopener">Report my bill rate (consumer)</a></div></div>`}
+function draw(){const q=$("q").value.toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked;
+let LS=R.filter(u=>(F==="all"||u.t===F||u.i===F)&&(u.n+" "+u.a+" "+IS[u.i]).toLowerCase().includes(q)).filter(u=>{const x=rate(u.n);return(vs==="all"||(x&&x.s===vs))&&(!hr||x)});
+if(so!=="az"){const v=u=>{const x=rate(u.n);return x?x.r:null};LS.sort((a,b)=>{const p=v(a),r=v(b);if(p===null)return r===null?0:1;if(r===null)return -1;return so==="lo"?p-r:r-p})}
+$("cnt").textContent=LS.length+" of "+R.length+" utilities";
+ML.clearLayers();LS.forEach(u=>{u.mk=LL.circleMarker([u.la,u.ln],{radius:7,color:"#fff",weight:1.5,fillColor:u.t==="P"?"#ce1126":"#0038a8",fillOpacity:.95}).bindPopup(()=>card(u),{minWidth:250}).addTo(ML)});
+if(LS.length&&(F!=="all"||q))map.fitBounds(LL.latLngBounds(LS.map(u=>[u.la,u.ln])),{padding:[30,30],maxZoom:9});else if(!q&&F==="all")map.setView([12.5,122.5],map.getZoom()<6?6:map.getZoom());
+$("g").innerHTML=LS.map(card).join("")||'<p class="cnt">No matches. Try clearing a filter.</p>'}
+$("g").onclick=e=>{if(e.target.closest("a"))return;const c=e.target.closest(".c");if(!c)return;const u=R.find(x=>x.n===c.dataset.n);if(u&&u.mk){$("map").scrollIntoView({behavior:"smooth",block:"center"});map.flyTo([u.la,u.ln],10);u.mk.openPopup()}};
+draw();
+</script></body></html>
