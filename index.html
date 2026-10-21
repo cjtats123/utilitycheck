@@ -113,6 +113,10 @@ dialog{max-width:min(560px,calc(100vw - 32px));padding:18px 20px;background:var(
 dialog::backdrop{background:rgba(5,10,25,.55)}
 dialog h2{margin:0 0 8px;font-size:1.05rem}dialog p{margin:0 0 14px;font-size:.88rem;color:var(--mu)}
 
+/* first-visit notice */
+#gt{width:min(460px,calc(100vw - 32px))}
+#gt h2{font-size:1.15rem}#gt ul{margin:0 0 14px;padding-left:20px;font-size:.9rem;color:var(--mu)}#gt li+li{margin-top:6px}
+#gt .row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}#gt .btn{flex:1 1 auto;min-height:44px}
 /* rate history */
 .hb{width:100%;margin-top:10px;padding:8px 12px;font-size:.85rem}
 #hd{width:min(680px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
@@ -185,6 +189,9 @@ input[type=search],select{font-size:14px}
 <p>We try to keep the data accurate and current, but we can't guarantee it is complete, correct or up to date, and it should not be your only basis for a financial decision.<span id="dce"></span></p>
 <p>Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</p>
 <button class="btn" id="dc" type="button">Close</button></dialog>
+<dialog id="gt" aria-labelledby="gh"><h2 id="gh">Before you continue</h2>
+<ul><li>UtilityCheck is an independent, informational project, not affiliated with ERC, NEA or any utility.</li><li>Rates are indicative monthly averages and may be incomplete or outdated.</li><li>Your utility's official bill always prevails. Don't rely on this site alone for financial decisions.</li></ul>
+<div class="row"><button class="btn" id="ga" type="button">I understand, continue</button><button class="lb" id="gf" type="button">Read full disclaimer</button></div></dialog>
 <dialog id="hd" aria-labelledby="hn"><div class="dh"><div><h2 id="hn"></h2><small id="hs"></small></div><button class="x" id="hx" type="button" aria-label="Close">✕</button></div>
 <div class="hv"><b id="h1"></b><span id="h2"></span></div>
 <div id="hc"></div>
@@ -779,6 +786,12 @@ const CONTACT="";
 if(/^[^\s@"<>]+@[^\s@"<>]+\.[^\s@"<>]+$/.test(CONTACT)){const m="mailto:"+CONTACT+"?subject="+encodeURIComponent("UtilityCheck data correction");
 $("rp").innerHTML=' · <a href="'+esc(m)+'">Report an error</a>';
 $("dce").innerHTML=' If you spot an error, or you are a utility that wants a rate corrected, email <a href="'+esc(m)+'">'+esc(CONTACT)+'</a> and we will review it promptly.'}
+/* first-visit notice (remembered after acceptance; bump the version to ask everyone again) */
+const AK="uc-ack-v1",gt=$("gt");let seen=false;try{seen=localStorage.getItem(AK)==="1"}catch(e){}
+gt.addEventListener("cancel",e=>e.preventDefault());
+$("ga").addEventListener("click",()=>{try{localStorage.setItem(AK,"1")}catch(e){}gt.close()});
+$("gf").addEventListener("click",()=>$("dl").showModal());
+if(!seen)gt.showModal();
 /* disclaimer */
 const dl=$("dl");$("ab").addEventListener("click",()=>dl.showModal());$("dc").addEventListener("click",()=>dl.close());
 dl.addEventListener("click",e=>{if(e.target===dl)dl.close()});
