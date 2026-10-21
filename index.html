@@ -178,9 +178,12 @@ input[type=search],select{font-size:14px}
 <noscript><p class="empty">UtilityCheck needs JavaScript to show rates.</p></noscript>
 </aside>
 </main>
-<footer>Indicative monthly residential rates from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a>. Your utility's official bill always prevails. <button class="lb" id="ab" type="button">Disclaimer</button> · <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a></footer>
+<footer>Indicative monthly residential rates from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a>. Your utility's official bill always prevails. <button class="lb" id="ab" type="button">Disclaimer</button> · <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a><span id="rp"></span></footer>
 <dialog id="dl" aria-labelledby="dh"><h2 id="dh">About these rates</h2>
-<p>List compiled from general knowledge and may be incomplete or outdated; verify with NEA (cooperatives) and ERC (private utilities). Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Rates marked "Via PRESYO-PH" are monthly residential averages for the billing month selected, from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), not a utility bill. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</p>
+<p>UtilityCheck is an independent, informational project. It is not affiliated with or endorsed by ERC, NEA, PRESYO-PH or any utility, and company names are used only to identify them.</p>
+<p>Rates are indicative monthly residential averages in ₱/kWh, mostly from <a href="https://presyo.icsc.ngo/" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), along with official advisories and community reports where labeled. They are not a utility bill. Actual charges vary by month, consumption tier and customer class, and your utility's official bill always prevails.</p>
+<p>We try to keep the data accurate and current, but we can't guarantee it is complete, correct or up to date, and it should not be your only basis for a financial decision.<span id="dce"></span></p>
+<p>Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</p>
 <button class="btn" id="dc" type="button">Close</button></dialog>
 <dialog id="hd" aria-labelledby="hn"><div class="dh"><div><h2 id="hn"></h2><small id="hs"></small></div><button class="x" id="hx" type="button" aria-label="Close">✕</button></div>
 <div class="hv"><b id="h1"></b><span id="h2"></span></div>
@@ -771,6 +774,11 @@ if(mq.addEventListener)mq.addEventListener("change",icon);icon();
 
 $("hrg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;HRG=b.dataset.r;for(const x of $("hrg").children)x.setAttribute("aria-pressed",x===b);renderHist()});
 $("hx").addEventListener("click",()=>$("hd").close());$("hd").addEventListener("click",e=>{if(e.target===$("hd"))$("hd").close()});
+/* contact: set CONTACT to your email; leave "" to hide the report link */
+const CONTACT="";
+if(/^[^\s@"<>]+@[^\s@"<>]+\.[^\s@"<>]+$/.test(CONTACT)){const m="mailto:"+CONTACT+"?subject="+encodeURIComponent("UtilityCheck data correction");
+$("rp").innerHTML=' · <a href="'+esc(m)+'">Report an error</a>';
+$("dce").innerHTML=' If you spot an error, or you are a utility that wants a rate corrected, email <a href="'+esc(m)+'">'+esc(CONTACT)+'</a> and we will review it promptly.'}
 /* disclaimer */
 const dl=$("dl");$("ab").addEventListener("click",()=>dl.showModal());$("dc").addEventListener("click",()=>dl.close());
 dl.addEventListener("click",e=>{if(e.target===dl)dl.close()});
