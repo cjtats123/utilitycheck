@@ -83,6 +83,7 @@ footer{flex:none}
 <p class="leg"><i style="background:#ce1126"></i>Private utility<i style="background:#0038a8"></i>Electric cooperative · Tap a dot for details</p></section>
 <aside class="side">
 <div class="bar"><input type="search" id="q" placeholder="Search utility or province…">
+<select id="mo" aria-label="Billing month"></select>
 <select id="so" aria-label="Sort"><option value="az">Sort: A–Z</option><option value="lo">Cheapest first</option><option value="hi">Most expensive first</option></select>
 <select id="vs" aria-label="Verification status"><option value="all">Any status</option><option value="utility">Verified by utility</option><option value="official">Official advisory</option><option value="presyo">Via PRESYO-PH</option><option value="community">Community-reported</option></select></div>
 <div class="chips" id="ch"></div>
@@ -91,7 +92,7 @@ footer{flex:none}
 <div class="grid" id="g"></div>
 </aside>
 </main>
-<footer>List compiled from general knowledge and may be incomplete or outdated; verify with NEA (cooperatives) and ERC (private utilities). Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Rates marked "Via PRESYO-PH" are residential averages (September 2026, or the latest earlier month shown on each card) from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), not a utility bill. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</footer>
+<footer>List compiled from general knowledge and may be incomplete or outdated; verify with NEA (cooperatives) and ERC (private utilities). Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Rates marked "Via PRESYO-PH" are monthly residential averages for the billing month selected, from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), not a utility bill. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</footer>
 <script>
 // code|type(P=private,C=cooperative)|island(L/V/M)|area
 const R=`MERALCO|P|L|Metro Manila, Rizal, Cavite, Bulacan, Laguna, Batangas, Quezon|14.600|121.000
@@ -254,170 +255,176 @@ const IS={L:"Luzon",V:"Visayas",M:"Mindanao"};let F="all";const $=x=>document.ge
 // Google Forms placeholders: replace with your real form links
 const FORM_REP="https://forms.google.com/REPLACE_UTILITY_REP_FORM",FORM_BILL="https://forms.google.com/REPLACE_CONSUMER_BILL_FORM";
 const SRC={utility:{l:"Verified by utility",k:1},official:{l:"Official advisory",k:2},community:{l:"Community-reported (unverified)",k:3},presyo:{l:"Via PRESYO-PH (ICSC)",k:2}};
-// Residential rates, ₱/kWh. null = "Rate not yet available". Fill in only from a real advisory.
-// Example: CEPALCO:{m:"2026-10",r:12.3456,s:"official",u:"https://link-to-advisory",b:{Generation:6.1,Transmission:1.2,Distribution:1.5,"System loss":0.5,"Taxes & others":3.0}}
-// s = "presyo" | "official" | "utility" | "community". Official and utility rates need u (advisory link or file). b is optional.
 const PU="https://presyo.icsc.ngo/national";
+// RATES[utility][YYYY-MM] = residential rate in PHP/kWh (source: PRESYO-PH). To add a month, add "YYYY-MM":rate to each utility.
+// A value can also be an object {r:12.34,s:"official"|"utility"|"community"|"presyo",u:"https://advisory-link",b:{Generation:6.1,...}}.
 const RATES={
-"MERALCO":{m:"2026-09",r:14.7424,s:"presyo",u:PU},
-"SFELAPCO":{m:"2026-09",r:13.12,s:"presyo",u:PU},
-"AEC":{m:"2026-09",r:11.8441,s:"presyo",u:PU},
-"CELCOR":{m:"2026-09",r:13.07,s:"presyo",u:PU},
-"DECORP":{m:"2026-09",r:10.96,s:"presyo",u:PU},
-"PENELCO":{m:"2026-09",r:11.2434,s:"presyo",u:PU},
-"CEDC":{m:"2026-08",r:7.54,s:"presyo",u:PU},
+"MERALCO":{"2026-08":14.7833,"2026-09":14.7424},
+"SFELAPCO":{"2026-08":13.4,"2026-09":13.12},
+"AEC":{"2026-08":13.2415,"2026-09":11.8441},
+"CELCOR":{"2026-08":12.63,"2026-09":13.07},
+"DECORP":{"2026-08":12.59,"2026-09":10.96},
+"PENELCO":{"2026-08":12.2469,"2026-09":11.2434},
+"CEDC":{"2026-08":7.54},
 "Subic Enerzone":null,
-"ABRECO":{m:"2026-09",r:13.5161,s:"presyo",u:PU},
+"ABRECO":{"2026-08":13.7009,"2026-09":13.5161},
 "APELCO":null,
-"BENECO":{m:"2026-09",r:11.8038,s:"presyo",u:PU},
-"IFELCO":{m:"2026-09",r:10.2459,s:"presyo",u:PU},
-"KAELCO":{m:"2026-08",r:14.8441,s:"presyo",u:PU},
+"BENECO":{"2026-08":12.61,"2026-09":11.8038},
+"IFELCO":{"2026-08":10.6268,"2026-09":10.2459},
+"KAELCO":{"2026-08":14.8441},
 "MOPRECO":null,
-"INEC":{m:"2026-09",r:11.1437,s:"presyo",u:PU},
-"ISECO":{m:"2026-09",r:13.2297,s:"presyo",u:PU},
-"LUELCO":{m:"2026-08",r:12.72,s:"presyo",u:PU},
-"CENPELCO":{m:"2026-09",r:11.7948,s:"presyo",u:PU},
-"PANELCO I":{m:"2026-09",r:12.5492,s:"presyo",u:PU},
-"PANELCO III":{m:"2026-09",r:12.6647,s:"presyo",u:PU},
-"BATANELCO":{m:"2026-09",r:12.72,s:"presyo",u:PU},
-"CAGELCO I":{m:"2026-09",r:11.89,s:"presyo",u:PU},
-"CAGELCO II":{m:"2026-09",r:11.5505,s:"presyo",u:PU},
-"ISELCO I":{m:"2026-09",r:12.9704,s:"presyo",u:PU},
-"ISELCO II":{m:"2026-09",r:11.2999,s:"presyo",u:PU},
-"NUVELECO":{m:"2026-09",r:9.9494,s:"presyo",u:PU},
-"QUIRELCO":{m:"2026-09",r:12.2576,s:"presyo",u:PU},
-"NEECO I":{m:"2026-09",r:11.812,s:"presyo",u:PU},
-"NEECO II Area 1":{m:"2026-09",r:12.0279,s:"presyo",u:PU},
-"NEECO II Area 2":{m:"2026-08",r:14.8191,s:"presyo",u:PU},
-"PELCO I":{m:"2026-09",r:11.77,s:"presyo",u:PU},
-"PELCO II":{m:"2026-09",r:10.9197,s:"presyo",u:PU},
-"PELCO III":{m:"2026-09",r:12.1188,s:"presyo",u:PU},
-"TARELCO I":{m:"2026-09",r:13.3194,s:"presyo",u:PU},
-"TARELCO II":{m:"2026-09",r:12.2673,s:"presyo",u:PU},
-"ZAMECO I":{m:"2026-09",r:12.484,s:"presyo",u:PU},
-"ZAMECO II":{m:"2026-09",r:12.4784,s:"presyo",u:PU},
-"AURELCO":{m:"2026-09",r:14.087,s:"presyo",u:PU},
-"BATELEC I":{m:"2026-09",r:11.3386,s:"presyo",u:PU},
-"BATELEC II":{m:"2026-09",r:9.8909,s:"presyo",u:PU},
-"FLECO":{m:"2026-09",r:9.6769,s:"presyo",u:PU},
-"QUEZELCO I":{m:"2026-09",r:12.0213,s:"presyo",u:PU},
-"QUEZELCO II":{m:"2026-09",r:12.8638,s:"presyo",u:PU},
-"MARELCO":{m:"2026-09",r:12.1,s:"presyo",u:PU},
-"OMECO":{m:"2026-09",r:12.5525,s:"presyo",u:PU},
-"ORMECO":{m:"2026-09",r:15.3467,s:"presyo",u:PU},
-"PALECO":{m:"2026-09",r:12.8643,s:"presyo",u:PU},
-"BISELCO":{m:"2026-09",r:13.0167,s:"presyo",u:PU},
-"ROMELCO":{m:"2026-08",r:11.94,s:"presyo",u:PU},
-"TIELCO":{m:"2026-09",r:11.9521,s:"presyo",u:PU},
-"CASURECO I":{m:"2026-09",r:12.8118,s:"presyo",u:PU},
-"CASURECO II":{m:"2026-09",r:10.3138,s:"presyo",u:PU},
-"CASURECO III":{m:"2026-08",r:13.9327,s:"presyo",u:PU},
-"CASURECO IV":{m:"2026-09",r:12.2488,s:"presyo",u:PU},
-"CANORECO":{m:"2026-09",r:11.2072,s:"presyo",u:PU},
-"FICELCO":{m:"2026-09",r:18.1342,s:"presyo",u:PU},
-"SORECO I":{m:"2026-08",r:15.495,s:"presyo",u:PU},
-"SORECO II":{m:"2026-09",r:13.6052,s:"presyo",u:PU},
-"MASELCO":{m:"2026-09",r:10.667,s:"presyo",u:PU},
+"INEC":{"2026-08":10.4136,"2026-09":11.1437},
+"ISECO":{"2026-08":12.7456,"2026-09":13.2297},
+"LUELCO":{"2026-08":12.72},
+"CENPELCO":{"2026-08":12.739,"2026-09":11.7948},
+"PANELCO I":{"2026-08":14.3369,"2026-09":12.5492},
+"PANELCO III":{"2026-08":12.7715,"2026-09":12.6647},
+"BATANELCO":{"2026-08":12.77,"2026-09":12.72},
+"CAGELCO I":{"2026-08":13.6,"2026-09":11.89},
+"CAGELCO II":{"2026-08":13.7219,"2026-09":11.5505},
+"ISELCO I":{"2026-08":12.6553,"2026-09":12.9704},
+"ISELCO II":{"2026-08":13.0444,"2026-09":11.2999},
+"NUVELECO":{"2026-08":10.5959,"2026-09":9.9494},
+"QUIRELCO":{"2026-08":13.2582,"2026-09":12.2576},
+"NEECO I":{"2026-08":13.863,"2026-09":11.812},
+"NEECO II Area 1":{"2026-08":13.1383,"2026-09":12.0279},
+"NEECO II Area 2":{"2026-08":14.8191},
+"PELCO I":{"2026-08":11.95,"2026-09":11.77},
+"PELCO II":{"2026-08":11.8714,"2026-09":10.9197},
+"PELCO III":{"2026-08":11.5587,"2026-09":12.1188},
+"TARELCO I":{"2026-08":14.976,"2026-09":13.3194},
+"TARELCO II":{"2026-08":13.1795,"2026-09":12.2673},
+"ZAMECO I":{"2026-08":12.9531,"2026-09":12.484},
+"ZAMECO II":{"2026-08":12.9525,"2026-09":12.4784},
+"AURELCO":{"2026-08":16.3008,"2026-09":14.087},
+"BATELEC I":{"2026-08":12.6969,"2026-09":11.3386},
+"BATELEC II":{"2026-08":11.7798,"2026-09":9.8909},
+"FLECO":{"2026-08":12.1928,"2026-09":9.6769},
+"QUEZELCO I":{"2026-08":13.6091,"2026-09":12.0213},
+"QUEZELCO II":{"2026-08":13.1537,"2026-09":12.8638},
+"MARELCO":{"2026-08":11.13,"2026-09":12.1},
+"OMECO":{"2026-08":12.57,"2026-09":12.5525},
+"ORMECO":{"2026-08":16.5626,"2026-09":15.3467},
+"PALECO":{"2026-08":12.8638,"2026-09":12.8643},
+"BISELCO":{"2026-08":12.0838,"2026-09":13.0167},
+"ROMELCO":{"2026-08":11.94},
+"TIELCO":{"2026-08":11.9263,"2026-09":11.9521},
+"CASURECO I":{"2026-08":14.8914,"2026-09":12.8118},
+"CASURECO II":{"2026-08":13.3145,"2026-09":10.3138},
+"CASURECO III":{"2026-08":13.9327},
+"CASURECO IV":{"2026-08":13.1987,"2026-09":12.2488},
+"CANORECO":{"2026-08":12.0295,"2026-09":11.2072},
+"FICELCO":{"2026-08":18.3155,"2026-09":18.1342},
+"SORECO I":{"2026-08":15.495},
+"SORECO II":{"2026-08":14.5666,"2026-09":13.6052},
+"MASELCO":{"2026-08":10.666,"2026-09":10.667},
 "TISELCO":null,
-"VECO":{m:"2026-09",r:14.89,s:"presyo",u:PU},
-"MECO":{m:"2026-09",r:15.9806,s:"presyo",u:PU},
+"VECO":{"2026-08":14.96,"2026-09":14.89},
+"MECO":{"2026-08":15.0586,"2026-09":15.9806},
 "Balamban Enerzone":null,
-"BLCI":{m:"2026-09",r:13.3157,s:"presyo",u:PU},
-"CEBECO I":{m:"2026-09",r:15.24,s:"presyo",u:PU},
-"CEBECO II":{m:"2026-09",r:15.91,s:"presyo",u:PU},
-"CEBECO III":{m:"2026-09",r:15.0842,s:"presyo",u:PU},
-"BOHECO I":{m:"2026-09",r:11.1196,s:"presyo",u:PU},
-"BOHECO II":{m:"2026-09",r:12.9756,s:"presyo",u:PU},
-"AKELCO":{m:"2026-08",r:15.1481,s:"presyo",u:PU},
-"ANTECO":{m:"2026-08",r:15.9763,s:"presyo",u:PU},
-"CAPELCO":{m:"2026-09",r:15.782,s:"presyo",u:PU},
-"ILECO I":{m:"2026-09",r:15.7752,s:"presyo",u:PU},
-"ILECO II":{m:"2026-09",r:15.8459,s:"presyo",u:PU},
-"ILECO III":{m:"2026-09",r:16.4791,s:"presyo",u:PU},
-"GUIMELCO":{m:"2026-09",r:16.3328,s:"presyo",u:PU},
-"NOCECO":{m:"2026-09",r:16.01,s:"presyo",u:PU},
+"BLCI":{"2026-08":13.3457,"2026-09":13.3157},
+"CEBECO I":{"2026-08":14.89,"2026-09":15.24},
+"CEBECO II":{"2026-08":16.43,"2026-09":15.91},
+"CEBECO III":{"2026-08":13.9793,"2026-09":15.0842},
+"BOHECO I":{"2026-08":11.2506,"2026-09":11.1196},
+"BOHECO II":{"2026-08":13.0275,"2026-09":12.9756},
+"AKELCO":{"2026-08":15.1481},
+"ANTECO":{"2026-08":15.9763},
+"CAPELCO":{"2026-08":14.5417,"2026-09":15.782},
+"ILECO I":{"2026-08":15.2377,"2026-09":15.7752},
+"ILECO II":{"2026-09":15.8459},
+"ILECO III":{"2026-08":15.3325,"2026-09":16.4791},
+"GUIMELCO":{"2026-08":15.9176,"2026-09":16.3328},
+"NOCECO":{"2026-08":15.23,"2026-09":16.01},
 "CENECO":null,
-"NONECO":{m:"2026-08",r:15.74,s:"presyo",u:PU},
-"NORECO II":{m:"2026-09",r:14.3522,s:"presyo",u:PU},
-"LEYECO II":{m:"2026-09",r:14.0488,s:"presyo",u:PU},
+"NONECO":{"2026-08":15.74},
+"NORECO II":{"2026-08":15.0867,"2026-09":14.3522},
+"LEYECO II":{"2026-08":11.6135,"2026-09":14.0488},
 "LEYECO III":null,
-"LEYECO IV":{m:"2026-09",r:16.9708,s:"presyo",u:PU},
-"LEYECO V":{m:"2026-09",r:16.3837,s:"presyo",u:PU},
-"SOLECO":{m:"2026-09",r:16.6015,s:"presyo",u:PU},
-"BILECO":{m:"2026-09",r:18.9275,s:"presyo",u:PU},
-"SAMELCO I":{m:"2026-09",r:15.4664,s:"presyo",u:PU},
-"SAMELCO II":{m:"2026-09",r:14.7723,s:"presyo",u:PU},
-"NORSAMELCO":{m:"2026-09",r:15.8719,s:"presyo",u:PU},
-"ESAMELCO":{m:"2026-09",r:14.8611,s:"presyo",u:PU},
-"DLPC":{m:"2026-09",r:13.2393,s:"presyo",u:PU},
-"CEPALCO":{m:"2026-08",r:12.31,s:"presyo",u:PU},
-"ILPI":{m:"2026-09",r:14.1007,s:"presyo",u:PU},
-"MORESCO I":{m:"2026-08",r:12.7961,s:"presyo",u:PU},
-"MORESCO II":{m:"2026-09",r:12.3534,s:"presyo",u:PU},
-"MOELCI I":{m:"2026-09",r:14.7056,s:"presyo",u:PU},
-"MOELCI II":{m:"2026-09",r:12.8258,s:"presyo",u:PU},
-"FIBECO":{m:"2026-09",r:13.3517,s:"presyo",u:PU},
-"BUSECO":{m:"2026-08",r:10.75,s:"presyo",u:PU},
-"CAMELCO":{m:"2026-08",r:14.8991,s:"presyo",u:PU},
-"LANECO":{m:"2026-08",r:11.3978,s:"presyo",u:PU},
-"LASURECO":{m:"2026-09",r:5.2587,s:"presyo",u:PU},
-"ZAMCELCO":{m:"2026-09",r:13.4668,s:"presyo",u:PU},
-"ZANECO":{m:"2026-09",r:14.1818,s:"presyo",u:PU},
+"LEYECO IV":{"2026-08":16.8741,"2026-09":16.9708},
+"LEYECO V":{"2026-08":16.6446,"2026-09":16.3837},
+"SOLECO":{"2026-08":15.8599,"2026-09":16.6015},
+"BILECO":{"2026-08":18.7587,"2026-09":18.9275},
+"SAMELCO I":{"2026-08":12.7667,"2026-09":15.4664},
+"SAMELCO II":{"2026-08":14.3742,"2026-09":14.7723},
+"NORSAMELCO":{"2026-08":14.193,"2026-09":15.8719},
+"ESAMELCO":{"2026-08":13.9282,"2026-09":14.8611},
+"DLPC":{"2026-08":12.8952,"2026-09":13.2393},
+"CEPALCO":{"2026-08":12.31},
+"ILPI":{"2026-08":15.1326,"2026-09":14.1007},
+"MORESCO I":{"2026-08":12.7961},
+"MORESCO II":{"2026-08":11.71,"2026-09":12.3534},
+"MOELCI I":{"2026-08":14.8155,"2026-09":14.7056},
+"MOELCI II":{"2026-08":13.2478,"2026-09":12.8258},
+"FIBECO":{"2026-08":14.3108,"2026-09":13.3517},
+"BUSECO":{"2026-08":10.75},
+"CAMELCO":{"2026-08":14.8991},
+"LANECO":{"2026-08":11.3978},
+"LASURECO":{"2026-08":5.14,"2026-09":5.2587},
+"ZAMCELCO":{"2026-08":13.0137,"2026-09":13.4668},
+"ZANECO":{"2026-08":14.0491,"2026-09":14.1818},
 "ZAMSURECO I":null,
-"ZAMSURECO II":{m:"2026-09",r:14.8192,s:"presyo",u:PU},
-"ANECO":{m:"2026-09",r:11.658,s:"presyo",u:PU},
-"ASELCO":{m:"2026-08",r:12.6201,s:"presyo",u:PU},
-"SURNECO":{m:"2026-09",r:12.0515,s:"presyo",u:PU},
-"SIARELCO":{m:"2026-09",r:10.518,s:"presyo",u:PU},
-"DIELCO":{m:"2026-09",r:9.5581,s:"presyo",u:PU},
-"SURSECO I":{m:"2026-09",r:12.0408,s:"presyo",u:PU},
-"SURSECO II":{m:"2026-09",r:14.1121,s:"presyo",u:PU},
-"DASURECO":{m:"2026-09",r:11.9987,s:"presyo",u:PU},
+"ZAMSURECO II":{"2026-08":14.1244,"2026-09":14.8192},
+"ANECO":{"2026-08":10.7592,"2026-09":11.658},
+"ASELCO":{"2026-08":12.6201},
+"SURNECO":{"2026-08":12.7559,"2026-09":12.0515},
+"SIARELCO":{"2026-08":8.6515,"2026-09":10.518},
+"DIELCO":{"2026-08":9.5172,"2026-09":9.5581},
+"SURSECO I":{"2026-08":11.5322,"2026-09":12.0408},
+"SURSECO II":{"2026-08":13.0664,"2026-09":14.1121},
+"DASURECO":{"2026-08":11.3487,"2026-09":11.9987},
 "DANECO":null,
-"DORECO":{m:"2026-09",r:14.1646,s:"presyo",u:PU},
+"DORECO":{"2026-08":14.3412,"2026-09":14.1646},
 "COTELCO":null,
-"SOCOTECO I":{m:"2026-08",r:13.21,s:"presyo",u:PU},
-"SOCOTECO II":{m:"2026-09",r:12.4968,s:"presyo",u:PU},
-"SUKELCO":{m:"2026-09",r:9.4036,s:"presyo",u:PU},
+"SOCOTECO I":{"2026-08":13.21},
+"SOCOTECO II":{"2026-08":9.5944,"2026-09":12.4968},
+"SUKELCO":{"2026-08":9.1197,"2026-09":9.4036},
 "MAGELCO":null,
 "BASELCO":null,
 "SULECO":null,
 "TAWELCO":null,
-"ALECO":{m:"2026-09",r:11.73,s:"presyo",u:PU},
-"BANELCO":{m:"2026-09",r:12.2327,s:"presyo",u:PU},
-"CELCO":{m:"2026-08",r:12.9362,s:"presyo",u:PU},
-"CLPC":{m:"2026-09",r:12.181,s:"presyo",u:PU},
-"IEC":{m:"2026-09",r:12.8168,s:"presyo",u:PU},
-"LUECO":{m:"2026-09",r:12.3475,s:"presyo",u:PU},
-"MORE":{m:"2026-09",r:14.4206,s:"presyo",u:PU},
-"NEPC":{m:"2026-09",r:14.2487,s:"presyo",u:PU},
-"NORECO I":{m:"2026-09",r:15.0433,s:"presyo",u:PU},
-"OEDC":{m:"2026-09",r:13.18,s:"presyo",u:PU},
-"PRESCO":{m:"2026-09",r:11.9438,s:"presyo",u:PU},
-"PROSIELCO":{m:"2026-09",r:12.8715,s:"presyo",u:PU},
-"DORELCO":{m:"2026-09",r:16.2285,s:"presyo",u:PU},
-"SAJELCO":{m:"2026-09",r:10.4502,s:"presyo",u:PU},
-"TEI":{m:"2026-09",r:12.07,s:"presyo",u:PU}
+"ALECO":{"2026-08":13.4533,"2026-09":11.73},
+"BANELCO":{"2026-08":12.2533,"2026-09":12.2327},
+"CELCO":{"2026-08":12.9362},
+"CLPC":{"2026-08":12.58,"2026-09":12.181},
+"IEC":{"2026-08":13.0675,"2026-09":12.8168},
+"LUECO":{"2026-08":12.6505,"2026-09":12.3475},
+"MORE":{"2026-08":14.4499,"2026-09":14.4206},
+"NEPC":{"2026-08":14.2787,"2026-09":14.2487},
+"NORECO I":{"2026-08":15.1097,"2026-09":15.0433},
+"OEDC":{"2026-08":13.28,"2026-09":13.18},
+"PRESCO":{"2026-08":13.8271,"2026-09":11.9438},
+"PROSIELCO":{"2026-08":12.8857,"2026-09":12.8715},
+"DORELCO":{"2026-08":13.2483,"2026-09":16.2285},
+"SAJELCO":{"2026-08":9.8159,"2026-09":10.4502},
+"TEI":{"2026-08":13.73,"2026-09":12.07}
 };
 const ym=m=>{const p=m.split("-");return +p[0]*12+ +p[1]-1},now=new Date(),cur=now.getFullYear()*12+now.getMonth();
 const fm=m=>new Date(+m.slice(0,4),+m.slice(5,7)-1,1).toLocaleString("en-PH",{month:"long",year:"numeric"});
-function rate(n){const x=RATES[n];return x&&/^\d{4}-\d{2}$/.test(x.m)&&x.r>0&&SRC[x.s]&&(x.s==="community"||x.u)?x:null}
+const MS=[...new Set(Object.values(RATES).flatMap(h=>h?Object.keys(h):[]))].filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().reverse();
+let MO=MS[0]||"latest";
+function pick(n,m){const h=RATES[n];if(!h||!(m in h))return null;const v=h[m],x=typeof v==="number"?{r:v,s:"presyo",u:PU}:Object.assign({},v);x.m=m;return x.r>0&&SRC[x.s]&&(x.s==="community"||x.u)?x:null}
+function latest(n){const h=RATES[n];if(!h)return null;for(const m of Object.keys(h).sort().reverse()){const x=pick(n,m);if(x)return x}return null}
+function rate(n){return MO==="latest"?latest(n):pick(n,MO)}
+const isOld=x=>x&&MO==="latest"&&cur-ym(x.m)>2;
+$("mo").innerHTML=MS.map(m=>`<option value="${m}">${fm(m)}</option>`).join("")+'<option value="latest">Latest available</option>';
+$("mo").value=MO;$("mo").onchange=e=>{MO=e.target.value;draw()};
 const chips=[["all","All"],["P","Private"],["C","Cooperative"],["L","Luzon"],["V","Visayas"],["M","Mindanao"]];
 $("ch").innerHTML=chips.map(c=>`<button class="chip${c[0]==="all"?" on":""}" data-f="${c[0]}">${c[1]}</button>`).join("");
 $("ch").onclick=e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.f;[...$("ch").children].forEach(x=>x.classList.toggle("on",x===b));draw()};
 ["q","so","vs","hr"].forEach(i=>$(i).oninput=draw);
-function card(u){const x=rate(u.n),old=x&&cur-ym(x.m)>2;let r='<div class="rt na">Rate not yet available</div>';
+function card(u){const x=rate(u.n),old=isOld(x),lt=latest(u.n);let r=MO!=="latest"&&lt&&!x?`<div class="rt na">No data for ${fm(MO)}. Latest: ₱${lt.r.toFixed(2)} (${fm(lt.m)})</div>`:'<div class="rt na">Rate not yet available</div>';
 if(x){const bd=x.b?`<details><summary>View breakdown</summary>${Object.entries(x.b).map(([k,v])=>`${k}: ₱${(+v).toFixed(4)}`).join("<br>")}</details>`:"";
 r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/kWh</small></span><span class="bg s-${x.s}">${SRC[x.s].l}</span><br><small>Billing month: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}${x.u?` · <a href="${x.u}" target="_blank" rel="noopener">Source</a>`:""}</small>${bd}</div>`}
 return `<div data-n="${u.n}" class="c ${u.t}${old?" old":""}"><span class="tg">${u.t==="P"?"Private":"Co-op"}</span><b>${u.n}</b><small>${u.a} · ${IS[u.i]}</small>${r}<div class="ac"><a href="${FORM_REP}" target="_blank" rel="noopener">Submit/Update rate (utility rep)</a><a href="${FORM_BILL}" target="_blank" rel="noopener">Report my bill rate (consumer)</a></div></div>`}
-function row(u){const x=rate(u.n),old=x&&cur-ym(x.m)>2;
-const t=`${u.n} · ${u.a} · ${IS[u.i]}`+(x?` · ${SRC[x.s].l}, ${fm(x.m)}${old?" (outdated)":""}`:" · Rate not yet available");
+function row(u){const x=rate(u.n),old=isOld(x);
+const t=`${u.n} · ${u.a} · ${IS[u.i]}`+(x?` · ${SRC[x.s].l}, ${fm(x.m)}${old?" (outdated)":""}`:(MO!=="latest"?" · No data for "+fm(MO):" · Rate not yet available"));
 return `<div data-n="${u.n}" class="r ${u.t}${old?" old":""}" title="${t}"><b>${u.n}</b><span class="p${x?"":" na"}">${x?"₱"+x.r.toFixed(2):"—"}</span></div>`}
 function draw(){const q=$("q").value.toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked;
 let LS=R.filter(u=>(F==="all"||u.t===F||u.i===F)&&(u.n+" "+u.a+" "+IS[u.i]).toLowerCase().includes(q)).filter(u=>{const x=rate(u.n);return(vs==="all"||(x&&x.s===vs))&&(!hr||x)});
 if(so!=="az"){const v=u=>{const x=rate(u.n);return x?x.r:null};LS.sort((a,b)=>{const p=v(a),r=v(b);if(p===null)return r===null?0:1;if(r===null)return -1;return so==="lo"?p-r:r-p})}
-$("cnt").textContent=LS.length+" of "+R.length+" utilities";
-if(map){ML.clearLayers();LS.forEach(u=>{u.mk=LL.circleMarker([u.la,u.ln],{radius:7,color:"#fff",weight:1.5,fillColor:u.t==="P"?"#ce1126":"#0038a8",fillOpacity:.95}).bindPopup(()=>card(u),{minWidth:250}).addTo(ML)});
+$("cnt").textContent=LS.length+" of "+R.length+" utilities · "+LS.filter(u=>rate(u.n)).length+" with a rate ("+(MO==="latest"?"latest available":fm(MO))+")";
+if(map){ML.clearLayers();LS.forEach(u=>{u.mk=LL.circleMarker([u.la,u.ln],{radius:7,color:"#fff",weight:1.5,fillColor:u.t==="P"?"#ce1126":"#0038a8",fillOpacity:rate(u.n)?.95:.3}).bindPopup(()=>card(u),{minWidth:250}).addTo(ML)});
 if(LS.length&&(F!=="all"||q))map.fitBounds(LL.latLngBounds(LS.map(u=>[u.la,u.ln])),{padding:[30,30],maxZoom:9});else if(!q&&F==="all")map.setView([12.5,122.5],map.getZoom()<6?6:map.getZoom());}
 $("g").innerHTML=LS.map(row).join("")||'<p class="cnt">No matches. Try clearing a filter.</p>'}
 $("g").onclick=e=>{const c=e.target.closest(".r");if(!c)return;const u=R.find(x=>x.n===c.dataset.n);if(u&&u.mk){$("map").scrollIntoView({behavior:"smooth",block:"center"});map.flyTo([u.la,u.ln],10);u.mk.openPopup()}};
