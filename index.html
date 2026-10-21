@@ -14,7 +14,7 @@ header::after{content:"";position:absolute;inset:0;background:repeating-linear-g
 .hw svg{flex:none;width:64px;height:64px}h1{margin:0;font-size:2rem;letter-spacing:-.02em}h1 span{color:var(--yl)}
 .hw p{margin:2px 0 0;opacity:.9}
 .stripe{height:6px;background:linear-gradient(90deg,var(--bl) 33%,var(--yl) 33% 66%,var(--rd) 66%)}
-main{max-width:960px;margin:0 auto;padding:16px 16px 48px}
+
 .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 input,select{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
 input{flex:1;min-width:180px}
@@ -22,7 +22,7 @@ input{flex:1;min-width:180px}
 .chip{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:5px 14px;font:inherit;font-size:.85rem;cursor:pointer}
 .chip.on{background:var(--bl);color:#fff;border-color:var(--bl)}
 .cnt{color:var(--mu);font-size:.85rem;margin:0 0 10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:4px;align-content:start}
 .c{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--bl);border-radius:10px;padding:10px 12px}
 .c.P{border-left-color:var(--rd)}.c.C{border-left-color:var(--bl)}
 .c b{display:block}.c small{color:var(--mu)}
@@ -33,8 +33,8 @@ input{flex:1;min-width:180px}
 .rt{margin-top:8px;padding-top:8px;border-top:1px dashed var(--bd)}
 .pr{font-size:1.35rem;font-weight:700;letter-spacing:-.02em}.pr small{font-size:.75rem;font-weight:400}
 .bg{display:inline-block;font-size:.68rem;font-weight:600;padding:1px 8px;border-radius:99px;margin-left:6px;vertical-align:middle;border:1px solid currentColor}
-.s-utility{color:#0a7a3d}.s-official{color:var(--bl)}.s-community{color:#a15c00}
-@media(prefers-color-scheme:dark){.s-utility{color:#5fd68f}.s-official{color:#8fb0ff}.s-community{color:#ffc266}}
+.s-utility{color:#0a7a3d}.s-official{color:var(--bl)}.s-community{color:#a15c00}.s-presyo{color:#6a3fb5}
+@media(prefers-color-scheme:dark){.s-utility{color:#5fd68f}.s-official{color:#8fb0ff}.s-community{color:#ffc266}.s-presyo{color:#c3a6ff}}
 .old .pr,.old .bg{opacity:.45}.old .pr{text-decoration:line-through}.od{color:var(--rd);font-weight:600}
 .na{color:var(--mu);font-style:italic}
 details{margin-top:4px;font-size:.82rem}summary{cursor:pointer;color:var(--bl)}
@@ -44,32 +44,54 @@ details{margin-top:4px;font-size:.82rem}summary{cursor:pointer;color:var(--bl)}
 .ac a:hover,.ac a:focus-visible{border-color:var(--bl);outline:none}
 footer a{color:var(--bl)}
 footer{color:var(--mu);font-size:.8rem;margin-top:24px}
-#map{background:#bcd9f0;height:58vh;min-height:320px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;z-index:0}
-.leg{font-size:.8rem;color:var(--mu);margin:0 0 12px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:baseline}
+#map{background:#bcd9f0;height:42vh;min-height:260px;border:1px solid var(--bd);border-radius:12px;margin-bottom:6px;z-index:0}
+.leg{font-size:.78rem;color:var(--mu);margin:0 0 4px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:baseline}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--tx)}.leaflet-popup-content{margin:8px}.leaflet-popup-content .c{border:0;padding:2px}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}}
 :root[data-theme="dark"] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9)}
 .c[data-n]{cursor:pointer}.land{fill:#eef0dc;fill-opacity:1;stroke:#7f98b8;stroke-width:1}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #map{background:#16264d}:root:not([data-theme="light"]) .land{fill:#2b3d6e;stroke:#4a5f96}}
 :root[data-theme="dark"] #map{background:#16264d}:root[data-theme="dark"] .land{fill:#2b3d6e;stroke:#4a5f96}
+
+/* compact one-screen dashboard */
+.hw{max-width:none!important}
+.hw{padding:10px 14px!important;gap:10px!important}.hw svg{width:40px!important;height:40px!important}h1{font-size:1.45rem!important}.hw p{font-size:.85rem}
+.app{max-width:none;margin:0;padding:10px 12px;display:block}
+.bar{margin-bottom:6px}.bar input,.bar select{padding:6px 10px;font-size:.85rem}.chips{margin-bottom:6px}.chip{padding:3px 11px;font-size:.78rem}
+.tgl{margin:0 0 4px;font-size:.78rem}.cnt{margin:0 0 6px;font-size:.78rem}
+.r{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bd);border-left:3px solid var(--bl);border-radius:6px;padding:3px 8px;font-size:.78rem;line-height:1.25;cursor:pointer;min-width:0}
+.r.P{border-left-color:var(--rd)}.r:hover{border-color:var(--bl)}
+.r b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.r .p{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}.r .p.na{color:var(--mu);font-weight:400}
+.r.old .p{text-decoration:line-through;opacity:.5}
+footer{margin:0!important;padding:4px 12px;font-size:.68rem!important;line-height:1.3}
+@media(min-width:900px){
+html,body{height:100%}body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+header,.stripe{flex:none}
+.app{flex:1;min-height:0;display:grid;grid-template-columns:minmax(280px,34%) 1fr;gap:12px}
+.mp{display:flex;flex-direction:column;min-height:0}#map{flex:1;height:auto;min-height:0;margin-bottom:4px}
+.side{display:flex;flex-direction:column;min-height:0}.side .grid{flex:1;min-height:0;overflow-y:auto;padding-right:2px}
+footer{flex:none}
+}
 </style><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script></head><body>
 <header><div class="hw">
 <svg viewBox="0 0 64 64" aria-label="UtilityCheck logo"><rect width="64" height="64" rx="16" fill="#fcd116"/><path d="M36 6 14 36h14l-4 22 26-32H35z" fill="#0038a8" opacity=".18"/><path d="M16 33l11 11 22-24" fill="none" stroke="#0038a8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="12" r="6" fill="#ce1126"/></svg>
 <div><h1>Utility<span>Check</span></h1><p>Every electric company &amp; cooperative in the Philippines, in one list.</p></div></div></header>
 <div class="stripe"></div>
-<main>
-<div id="map" role="application" aria-label="Map of Philippine electric utilities"></div>
-<p class="leg"><i style="background:#ce1126"></i>Private utility<i style="background:#0038a8"></i>Electric cooperative · Tap a dot for details</p>
+<main class="app">
+<section class="mp"><div id="map" role="application" aria-label="Map of Philippine electric utilities"></div>
+<p class="leg"><i style="background:#ce1126"></i>Private utility<i style="background:#0038a8"></i>Electric cooperative · Tap a dot for details</p></section>
+<aside class="side">
 <div class="bar"><input type="search" id="q" placeholder="Search utility or province…">
 <select id="so" aria-label="Sort"><option value="az">Sort: A–Z</option><option value="lo">Cheapest first</option><option value="hi">Most expensive first</option></select>
-<select id="vs" aria-label="Verification status"><option value="all">Any status</option><option value="utility">Verified by utility</option><option value="official">Official advisory</option><option value="community">Community-reported</option></select></div>
+<select id="vs" aria-label="Verification status"><option value="all">Any status</option><option value="utility">Verified by utility</option><option value="official">Official advisory</option><option value="presyo">Via PRESYO-PH</option><option value="community">Community-reported</option></select></div>
 <div class="chips" id="ch"></div>
 <label class="tgl"><input type="checkbox" id="hr" style="flex:none;min-width:0"> Only utilities with a rate</label>
 <p class="cnt" id="cnt"></p>
 <div class="grid" id="g"></div>
-<footer>List compiled from general knowledge and may be incomplete or outdated. Always verify with NEA (cooperatives) and ERC (private utilities) before relying on it.</footer>
-<footer>Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</footer>
+</aside>
 </main>
+<footer>List compiled from general knowledge and may be incomplete or outdated; verify with NEA (cooperatives) and ERC (private utilities). Rates are indicative. They change every month and depend on your consumption tier. Your official bill from the utility always prevails. UtilityCheck is not affiliated with ERC, NEA or any utility. Rates marked "Via PRESYO-PH" are residential averages (September 2026, or the latest earlier month shown on each card) from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), not a utility bill. Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</footer>
 <script>
 // code|type(P=private,C=cooperative)|island(L/V/M)|area
 const R=`MERALCO|P|L|Metro Manila, Rizal, Cavite, Bulacan, Laguna, Batangas, Quezon|14.600|121.000
@@ -187,7 +209,7 @@ SURSECO I|C|M|Surigao del Sur|8.700|126.200
 SURSECO II|C|M|Surigao del Sur|8.761|126.134
 DASURECO|C|M|Davao del Sur|6.750|125.350
 DANECO|C|M|Davao del Norte|7.450|125.750
-DORELCO|C|M|Davao Oriental|7.000|126.300
+DORECO|C|M|Davao Oriental|6.959|126.204
 COTELCO|C|M|Cotabato|7.200|124.250
 SOCOTECO I|C|M|South Cotabato|6.350|124.850
 SOCOTECO II|C|M|South Cotabato|6.411|124.784
@@ -195,8 +217,24 @@ SUKELCO|C|M|Sultan Kudarat|6.550|124.400
 MAGELCO|C|M|Maguindanao|6.950|124.350
 BASELCO|C|M|Basilan|6.550|122.000
 SULECO|C|M|Sulu|6.000|121.000
-TAWELCO|C|M|Tawi-Tawi|5.100|119.900`.split("\n").map(l=>{const a=l.split("|");return{n:a[0],t:a[1],i:a[2],a:a[3],la:+a[4],ln:+a[5]}});
-const LL=L,map=LL.map("map",{center:[12.5,122.5],zoom:6,minZoom:5,maxBounds:[[3,114],[22.5,129]]}),ML=LL.layerGroup().addTo(map);
+TAWELCO|C|M|Tawi-Tawi|5.100|119.900
+ALECO|C|L|Albay|13.140|123.733
+BANELCO|C|V|Bantayan Island, Cebu|11.183|123.715
+CELCO|C|V|Camotes Islands, Cebu|10.630|124.402
+CLPC|P|M|Cotabato City|7.217|124.245
+IEC|P|L|Ibaan, Batangas|13.834|121.130
+LUECO|P|L|La Union|16.619|120.317
+MORE|P|V|Iloilo City|10.700|122.567
+NEPC|P|V|Bacolod, Negros Occidental|10.701|122.964
+NORECO I|C|V|Negros Oriental|9.779|123.144
+OEDC|P|L|Olongapo, Zambales|14.833|120.281
+PRESCO|C|L|Pampanga|15.147|120.691
+PROSIELCO|C|V|Siquijor|9.240|123.571
+DORELCO|C|V|Leyte (Don Orestes Romualdez)|11.007|125.038
+SAJELCO|C|L|San Jose City, Nueva Ecija|15.784|120.972
+TEI|P|L|Tarlac|15.488|120.588`.split("\n").map(l=>{const a=l.split("|");return{n:a[0],t:a[1],i:a[2],a:a[3],la:+a[4],ln:+a[5]}});
+const LL=window.L;let map=null,ML=null;if(!LL)document.getElementById("map").innerHTML='<p class="cnt" style="padding:12px">Map could not load (check your internet connection). The list still works.</p>';
+if(LL){map=LL.map("map",{center:[12.5,122.5],zoom:6,minZoom:5,maxBounds:[[3,114],[22.5,129]]});ML=LL.layerGroup().addTo(map);
 map.createPane("land").style.zIndex=150;
 [[[18.5,120.6],[18.6,121.4],[18.3,122.2],[17.2,122.45],[16.2,122.3],[15.2,121.6],[14.6,121.9],[14.1,122.3],[14.1,122.9],[13.9,123.3],[13.2,123.7],[13.0,124.1],[12.6,124.0],[12.9,123.6],[13.5,123.2],[13.9,122.8],[13.7,122.3],[13.6,121.7],[13.8,121.05],[14.2,120.6],[14.5,120.6],[14.7,120.5],[14.5,120.4],[14.75,120.3],[15.3,119.9],[16.1,119.75],[16.4,120.3],[17.5,120.35],[18.4,120.55]],
 [[13.5,120.4],[13.5,121.5],[12.5,121.5],[12.2,121.1],[12.3,120.7],[13.0,120.3]],
@@ -211,14 +249,156 @@ map.createPane("land").style.zIndex=150;
 [[9.8,125.5],[9.4,126.0],[8.5,126.5],[7.5,126.6],[6.9,126.3],[6.1,126.2],[5.95,125.4],[6.3,125.0],[6.1,124.6],[6.9,124.2],[7.3,123.7],[7.8,122.9],[7.0,122.1],[7.7,122.3],[8.2,123.0],[8.6,123.4],[8.2,124.2],[8.5,124.65],[8.9,125.4]]
 ].forEach(p=>LL.polygon(p,{pane:"land",className:"land",interactive:false}).addTo(map));
 LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap contributors"}).addTo(map);
+}
 const IS={L:"Luzon",V:"Visayas",M:"Mindanao"};let F="all";const $=x=>document.getElementById(x);
 // Google Forms placeholders: replace with your real form links
 const FORM_REP="https://forms.google.com/REPLACE_UTILITY_REP_FORM",FORM_BILL="https://forms.google.com/REPLACE_CONSUMER_BILL_FORM";
-const SRC={utility:{l:"Verified by utility",k:1},official:{l:"Official advisory",k:2},community:{l:"Community-reported (unverified)",k:3}};
+const SRC={utility:{l:"Verified by utility",k:1},official:{l:"Official advisory",k:2},community:{l:"Community-reported (unverified)",k:3},presyo:{l:"Via PRESYO-PH (ICSC)",k:2}};
 // Residential rates, ₱/kWh. null = "Rate not yet available". Fill in only from a real advisory.
 // Example: CEPALCO:{m:"2026-10",r:12.3456,s:"official",u:"https://link-to-advisory",b:{Generation:6.1,Transmission:1.2,Distribution:1.5,"System loss":0.5,"Taxes & others":3.0}}
-// s = "official" | "utility" | "community". Official and utility rates need u (advisory link or file). b is optional.
-const RATES={MERALCO:null,VECO:null,DLPC:null,CEPALCO:null,SFELAPCO:null,AEC:null,MECO:null,BLCI:null,ILPI:null,CELCOR:null};
+// s = "presyo" | "official" | "utility" | "community". Official and utility rates need u (advisory link or file). b is optional.
+const PU="https://presyo.icsc.ngo/national";
+const RATES={
+"MERALCO":{m:"2026-09",r:14.7424,s:"presyo",u:PU},
+"SFELAPCO":{m:"2026-09",r:13.12,s:"presyo",u:PU},
+"AEC":{m:"2026-09",r:11.8441,s:"presyo",u:PU},
+"CELCOR":{m:"2026-09",r:13.07,s:"presyo",u:PU},
+"DECORP":{m:"2026-09",r:10.96,s:"presyo",u:PU},
+"PENELCO":{m:"2026-09",r:11.2434,s:"presyo",u:PU},
+"CEDC":{m:"2026-08",r:7.54,s:"presyo",u:PU},
+"Subic Enerzone":null,
+"ABRECO":{m:"2026-09",r:13.5161,s:"presyo",u:PU},
+"APELCO":null,
+"BENECO":{m:"2026-09",r:11.8038,s:"presyo",u:PU},
+"IFELCO":{m:"2026-09",r:10.2459,s:"presyo",u:PU},
+"KAELCO":{m:"2026-08",r:14.8441,s:"presyo",u:PU},
+"MOPRECO":null,
+"INEC":{m:"2026-09",r:11.1437,s:"presyo",u:PU},
+"ISECO":{m:"2026-09",r:13.2297,s:"presyo",u:PU},
+"LUELCO":{m:"2026-08",r:12.72,s:"presyo",u:PU},
+"CENPELCO":{m:"2026-09",r:11.7948,s:"presyo",u:PU},
+"PANELCO I":{m:"2026-09",r:12.5492,s:"presyo",u:PU},
+"PANELCO III":{m:"2026-09",r:12.6647,s:"presyo",u:PU},
+"BATANELCO":{m:"2026-09",r:12.72,s:"presyo",u:PU},
+"CAGELCO I":{m:"2026-09",r:11.89,s:"presyo",u:PU},
+"CAGELCO II":{m:"2026-09",r:11.5505,s:"presyo",u:PU},
+"ISELCO I":{m:"2026-09",r:12.9704,s:"presyo",u:PU},
+"ISELCO II":{m:"2026-09",r:11.2999,s:"presyo",u:PU},
+"NUVELECO":{m:"2026-09",r:9.9494,s:"presyo",u:PU},
+"QUIRELCO":{m:"2026-09",r:12.2576,s:"presyo",u:PU},
+"NEECO I":{m:"2026-09",r:11.812,s:"presyo",u:PU},
+"NEECO II Area 1":{m:"2026-09",r:12.0279,s:"presyo",u:PU},
+"NEECO II Area 2":{m:"2026-08",r:14.8191,s:"presyo",u:PU},
+"PELCO I":{m:"2026-09",r:11.77,s:"presyo",u:PU},
+"PELCO II":{m:"2026-09",r:10.9197,s:"presyo",u:PU},
+"PELCO III":{m:"2026-09",r:12.1188,s:"presyo",u:PU},
+"TARELCO I":{m:"2026-09",r:13.3194,s:"presyo",u:PU},
+"TARELCO II":{m:"2026-09",r:12.2673,s:"presyo",u:PU},
+"ZAMECO I":{m:"2026-09",r:12.484,s:"presyo",u:PU},
+"ZAMECO II":{m:"2026-09",r:12.4784,s:"presyo",u:PU},
+"AURELCO":{m:"2026-09",r:14.087,s:"presyo",u:PU},
+"BATELEC I":{m:"2026-09",r:11.3386,s:"presyo",u:PU},
+"BATELEC II":{m:"2026-09",r:9.8909,s:"presyo",u:PU},
+"FLECO":{m:"2026-09",r:9.6769,s:"presyo",u:PU},
+"QUEZELCO I":{m:"2026-09",r:12.0213,s:"presyo",u:PU},
+"QUEZELCO II":{m:"2026-09",r:12.8638,s:"presyo",u:PU},
+"MARELCO":{m:"2026-09",r:12.1,s:"presyo",u:PU},
+"OMECO":{m:"2026-09",r:12.5525,s:"presyo",u:PU},
+"ORMECO":{m:"2026-09",r:15.3467,s:"presyo",u:PU},
+"PALECO":{m:"2026-09",r:12.8643,s:"presyo",u:PU},
+"BISELCO":{m:"2026-09",r:13.0167,s:"presyo",u:PU},
+"ROMELCO":{m:"2026-08",r:11.94,s:"presyo",u:PU},
+"TIELCO":{m:"2026-09",r:11.9521,s:"presyo",u:PU},
+"CASURECO I":{m:"2026-09",r:12.8118,s:"presyo",u:PU},
+"CASURECO II":{m:"2026-09",r:10.3138,s:"presyo",u:PU},
+"CASURECO III":{m:"2026-08",r:13.9327,s:"presyo",u:PU},
+"CASURECO IV":{m:"2026-09",r:12.2488,s:"presyo",u:PU},
+"CANORECO":{m:"2026-09",r:11.2072,s:"presyo",u:PU},
+"FICELCO":{m:"2026-09",r:18.1342,s:"presyo",u:PU},
+"SORECO I":{m:"2026-08",r:15.495,s:"presyo",u:PU},
+"SORECO II":{m:"2026-09",r:13.6052,s:"presyo",u:PU},
+"MASELCO":{m:"2026-09",r:10.667,s:"presyo",u:PU},
+"TISELCO":null,
+"VECO":{m:"2026-09",r:14.89,s:"presyo",u:PU},
+"MECO":{m:"2026-09",r:15.9806,s:"presyo",u:PU},
+"Balamban Enerzone":null,
+"BLCI":{m:"2026-09",r:13.3157,s:"presyo",u:PU},
+"CEBECO I":{m:"2026-09",r:15.24,s:"presyo",u:PU},
+"CEBECO II":{m:"2026-09",r:15.91,s:"presyo",u:PU},
+"CEBECO III":{m:"2026-09",r:15.0842,s:"presyo",u:PU},
+"BOHECO I":{m:"2026-09",r:11.1196,s:"presyo",u:PU},
+"BOHECO II":{m:"2026-09",r:12.9756,s:"presyo",u:PU},
+"AKELCO":{m:"2026-08",r:15.1481,s:"presyo",u:PU},
+"ANTECO":{m:"2026-08",r:15.9763,s:"presyo",u:PU},
+"CAPELCO":{m:"2026-09",r:15.782,s:"presyo",u:PU},
+"ILECO I":{m:"2026-09",r:15.7752,s:"presyo",u:PU},
+"ILECO II":{m:"2026-09",r:15.8459,s:"presyo",u:PU},
+"ILECO III":{m:"2026-09",r:16.4791,s:"presyo",u:PU},
+"GUIMELCO":{m:"2026-09",r:16.3328,s:"presyo",u:PU},
+"NOCECO":{m:"2026-09",r:16.01,s:"presyo",u:PU},
+"CENECO":null,
+"NONECO":{m:"2026-08",r:15.74,s:"presyo",u:PU},
+"NORECO II":{m:"2026-09",r:14.3522,s:"presyo",u:PU},
+"LEYECO II":{m:"2026-09",r:14.0488,s:"presyo",u:PU},
+"LEYECO III":null,
+"LEYECO IV":{m:"2026-09",r:16.9708,s:"presyo",u:PU},
+"LEYECO V":{m:"2026-09",r:16.3837,s:"presyo",u:PU},
+"SOLECO":{m:"2026-09",r:16.6015,s:"presyo",u:PU},
+"BILECO":{m:"2026-09",r:18.9275,s:"presyo",u:PU},
+"SAMELCO I":{m:"2026-09",r:15.4664,s:"presyo",u:PU},
+"SAMELCO II":{m:"2026-09",r:14.7723,s:"presyo",u:PU},
+"NORSAMELCO":{m:"2026-09",r:15.8719,s:"presyo",u:PU},
+"ESAMELCO":{m:"2026-09",r:14.8611,s:"presyo",u:PU},
+"DLPC":{m:"2026-09",r:13.2393,s:"presyo",u:PU},
+"CEPALCO":{m:"2026-08",r:12.31,s:"presyo",u:PU},
+"ILPI":{m:"2026-09",r:14.1007,s:"presyo",u:PU},
+"MORESCO I":{m:"2026-08",r:12.7961,s:"presyo",u:PU},
+"MORESCO II":{m:"2026-09",r:12.3534,s:"presyo",u:PU},
+"MOELCI I":{m:"2026-09",r:14.7056,s:"presyo",u:PU},
+"MOELCI II":{m:"2026-09",r:12.8258,s:"presyo",u:PU},
+"FIBECO":{m:"2026-09",r:13.3517,s:"presyo",u:PU},
+"BUSECO":{m:"2026-08",r:10.75,s:"presyo",u:PU},
+"CAMELCO":{m:"2026-08",r:14.8991,s:"presyo",u:PU},
+"LANECO":{m:"2026-08",r:11.3978,s:"presyo",u:PU},
+"LASURECO":{m:"2026-09",r:5.2587,s:"presyo",u:PU},
+"ZAMCELCO":{m:"2026-09",r:13.4668,s:"presyo",u:PU},
+"ZANECO":{m:"2026-09",r:14.1818,s:"presyo",u:PU},
+"ZAMSURECO I":null,
+"ZAMSURECO II":{m:"2026-09",r:14.8192,s:"presyo",u:PU},
+"ANECO":{m:"2026-09",r:11.658,s:"presyo",u:PU},
+"ASELCO":{m:"2026-08",r:12.6201,s:"presyo",u:PU},
+"SURNECO":{m:"2026-09",r:12.0515,s:"presyo",u:PU},
+"SIARELCO":{m:"2026-09",r:10.518,s:"presyo",u:PU},
+"DIELCO":{m:"2026-09",r:9.5581,s:"presyo",u:PU},
+"SURSECO I":{m:"2026-09",r:12.0408,s:"presyo",u:PU},
+"SURSECO II":{m:"2026-09",r:14.1121,s:"presyo",u:PU},
+"DASURECO":{m:"2026-09",r:11.9987,s:"presyo",u:PU},
+"DANECO":null,
+"DORECO":{m:"2026-09",r:14.1646,s:"presyo",u:PU},
+"COTELCO":null,
+"SOCOTECO I":{m:"2026-08",r:13.21,s:"presyo",u:PU},
+"SOCOTECO II":{m:"2026-09",r:12.4968,s:"presyo",u:PU},
+"SUKELCO":{m:"2026-09",r:9.4036,s:"presyo",u:PU},
+"MAGELCO":null,
+"BASELCO":null,
+"SULECO":null,
+"TAWELCO":null,
+"ALECO":{m:"2026-09",r:11.73,s:"presyo",u:PU},
+"BANELCO":{m:"2026-09",r:12.2327,s:"presyo",u:PU},
+"CELCO":{m:"2026-08",r:12.9362,s:"presyo",u:PU},
+"CLPC":{m:"2026-09",r:12.181,s:"presyo",u:PU},
+"IEC":{m:"2026-09",r:12.8168,s:"presyo",u:PU},
+"LUECO":{m:"2026-09",r:12.3475,s:"presyo",u:PU},
+"MORE":{m:"2026-09",r:14.4206,s:"presyo",u:PU},
+"NEPC":{m:"2026-09",r:14.2487,s:"presyo",u:PU},
+"NORECO I":{m:"2026-09",r:15.0433,s:"presyo",u:PU},
+"OEDC":{m:"2026-09",r:13.18,s:"presyo",u:PU},
+"PRESCO":{m:"2026-09",r:11.9438,s:"presyo",u:PU},
+"PROSIELCO":{m:"2026-09",r:12.8715,s:"presyo",u:PU},
+"DORELCO":{m:"2026-09",r:16.2285,s:"presyo",u:PU},
+"SAJELCO":{m:"2026-09",r:10.4502,s:"presyo",u:PU},
+"TEI":{m:"2026-09",r:12.07,s:"presyo",u:PU}
+};
 const ym=m=>{const p=m.split("-");return +p[0]*12+ +p[1]-1},now=new Date(),cur=now.getFullYear()*12+now.getMonth();
 const fm=m=>new Date(+m.slice(0,4),+m.slice(5,7)-1,1).toLocaleString("en-PH",{month:"long",year:"numeric"});
 function rate(n){const x=RATES[n];return x&&/^\d{4}-\d{2}$/.test(x.m)&&x.r>0&&SRC[x.s]&&(x.s==="community"||x.u)?x:null}
@@ -230,13 +410,17 @@ function card(u){const x=rate(u.n),old=x&&cur-ym(x.m)>2;let r='<div class="rt na
 if(x){const bd=x.b?`<details><summary>View breakdown</summary>${Object.entries(x.b).map(([k,v])=>`${k}: ₱${(+v).toFixed(4)}`).join("<br>")}</details>`:"";
 r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/kWh</small></span><span class="bg s-${x.s}">${SRC[x.s].l}</span><br><small>Billing month: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}${x.u?` · <a href="${x.u}" target="_blank" rel="noopener">Source</a>`:""}</small>${bd}</div>`}
 return `<div data-n="${u.n}" class="c ${u.t}${old?" old":""}"><span class="tg">${u.t==="P"?"Private":"Co-op"}</span><b>${u.n}</b><small>${u.a} · ${IS[u.i]}</small>${r}<div class="ac"><a href="${FORM_REP}" target="_blank" rel="noopener">Submit/Update rate (utility rep)</a><a href="${FORM_BILL}" target="_blank" rel="noopener">Report my bill rate (consumer)</a></div></div>`}
+function row(u){const x=rate(u.n),old=x&&cur-ym(x.m)>2;
+const t=`${u.n} · ${u.a} · ${IS[u.i]}`+(x?` · ${SRC[x.s].l}, ${fm(x.m)}${old?" (outdated)":""}`:" · Rate not yet available");
+return `<div data-n="${u.n}" class="r ${u.t}${old?" old":""}" title="${t}"><b>${u.n}</b><span class="p${x?"":" na"}">${x?"₱"+x.r.toFixed(2):"—"}</span></div>`}
 function draw(){const q=$("q").value.toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked;
 let LS=R.filter(u=>(F==="all"||u.t===F||u.i===F)&&(u.n+" "+u.a+" "+IS[u.i]).toLowerCase().includes(q)).filter(u=>{const x=rate(u.n);return(vs==="all"||(x&&x.s===vs))&&(!hr||x)});
 if(so!=="az"){const v=u=>{const x=rate(u.n);return x?x.r:null};LS.sort((a,b)=>{const p=v(a),r=v(b);if(p===null)return r===null?0:1;if(r===null)return -1;return so==="lo"?p-r:r-p})}
 $("cnt").textContent=LS.length+" of "+R.length+" utilities";
-ML.clearLayers();LS.forEach(u=>{u.mk=LL.circleMarker([u.la,u.ln],{radius:7,color:"#fff",weight:1.5,fillColor:u.t==="P"?"#ce1126":"#0038a8",fillOpacity:.95}).bindPopup(()=>card(u),{minWidth:250}).addTo(ML)});
-if(LS.length&&(F!=="all"||q))map.fitBounds(LL.latLngBounds(LS.map(u=>[u.la,u.ln])),{padding:[30,30],maxZoom:9});else if(!q&&F==="all")map.setView([12.5,122.5],map.getZoom()<6?6:map.getZoom());
-$("g").innerHTML=LS.map(card).join("")||'<p class="cnt">No matches. Try clearing a filter.</p>'}
-$("g").onclick=e=>{if(e.target.closest("a"))return;const c=e.target.closest(".c");if(!c)return;const u=R.find(x=>x.n===c.dataset.n);if(u&&u.mk){$("map").scrollIntoView({behavior:"smooth",block:"center"});map.flyTo([u.la,u.ln],10);u.mk.openPopup()}};
-draw();
+if(map){ML.clearLayers();LS.forEach(u=>{u.mk=LL.circleMarker([u.la,u.ln],{radius:7,color:"#fff",weight:1.5,fillColor:u.t==="P"?"#ce1126":"#0038a8",fillOpacity:.95}).bindPopup(()=>card(u),{minWidth:250}).addTo(ML)});
+if(LS.length&&(F!=="all"||q))map.fitBounds(LL.latLngBounds(LS.map(u=>[u.la,u.ln])),{padding:[30,30],maxZoom:9});else if(!q&&F==="all")map.setView([12.5,122.5],map.getZoom()<6?6:map.getZoom());}
+$("g").innerHTML=LS.map(row).join("")||'<p class="cnt">No matches. Try clearing a filter.</p>'}
+$("g").onclick=e=>{const c=e.target.closest(".r");if(!c)return;const u=R.find(x=>x.n===c.dataset.n);if(u&&u.mk){$("map").scrollIntoView({behavior:"smooth",block:"center"});map.flyTo([u.la,u.ln],10);u.mk.openPopup()}};
+addEventListener("resize",()=>map&&map.invalidateSize());
+draw();setTimeout(()=>map&&map.invalidateSize(),0);
 </script></body></html>
