@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>UtilityCheck – Philippine Electric Utilities &amp; Rates</title>
-<meta name="description" content="Every electric cooperative and private utility in the Philippines on one map. Compare monthly residential rates (₱/kWh) and find official websites.">
+<title>UtilityCheck – Philippine Electric &amp; Water Utilities and Rates</title>
+<meta name="description" content="Every electric cooperative, private electric utility and water district in the Philippines on one map. Compare monthly electricity rates (₱/kWh) and water bills (₱ per 20 m³), and find official websites.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#0038a8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0a1228" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:title" content="UtilityCheck – Philippine Electric Utilities">
-<meta property="og:description" content="Compare monthly electricity rates of every Philippine electric cooperative and private utility.">
+<meta property="og:title" content="UtilityCheck – Philippine Electric &amp; Water Utilities">
+<meta property="og:description" content="Compare electricity rates and water district bills across the Philippines on one map.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -21,9 +21,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-:root{--bg:#f3f5fa;--card:#fff;--tx:#0b1b3f;--mu:#586280;--bd:#dce2ef;--bl:#0038a8;--rd:#ce1126;--yl:#fcd116;--lk:#0038a8;--rdt:#ce1126;--tf:none;--sh:0 1px 2px rgba(11,27,63,.08),0 4px 14px rgba(11,27,63,.08);--land:#eef0dc;--lands:#7f98b8;--sea:#bcd9f0;--su:#0a7a3d;--so:#0038a8;--sc:#a15c00;--sp:#6a3fb5;color-scheme:light}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;--bl:#3a68de;--lk:#8fb0ff;--rdt:#ff8a98;--tf:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9);--sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);--land:#2b3d6e;--lands:#4a5f96;--sea:#16264d;--su:#5fd68f;--so:#8fb0ff;--sc:#ffc266;--sp:#c3a6ff;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;--bl:#3a68de;--lk:#8fb0ff;--rdt:#ff8a98;--tf:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9);--sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);--land:#2b3d6e;--lands:#4a5f96;--sea:#16264d;--su:#5fd68f;--so:#8fb0ff;--sc:#ffc266;--sp:#c3a6ff;color-scheme:dark}
+:root{--bg:#f3f5fa;--card:#fff;--tx:#0b1b3f;--mu:#586280;--bd:#dce2ef;--bl:#0038a8;--rd:#ce1126;--yl:#fcd116;--lk:#0038a8;--rdt:#ce1126;--wt:#0a94d6;--wb:#0873a6;--wtt:#06688f;--tf:none;--sh:0 1px 2px rgba(11,27,63,.08),0 4px 14px rgba(11,27,63,.08);--land:#eef0dc;--lands:#7f98b8;--sea:#bcd9f0;--su:#0a7a3d;--so:#0038a8;--sc:#a15c00;--sp:#6a3fb5;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;--bl:#3a68de;--lk:#8fb0ff;--wt:#38bdf8;--wb:#0873a6;--wtt:#7fd3f7;--rdt:#ff8a98;--tf:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9);--sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);--land:#2b3d6e;--lands:#4a5f96;--sea:#16264d;--su:#5fd68f;--so:#8fb0ff;--sc:#ffc266;--sp:#c3a6ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1228;--card:#121c3a;--tx:#eef2ff;--mu:#9aa6c9;--bd:#243058;--bl:#3a68de;--lk:#8fb0ff;--wt:#38bdf8;--wb:#0873a6;--wtt:#7fd3f7;--rdt:#ff8a98;--tf:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9);--sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);--land:#2b3d6e;--lands:#4a5f96;--sea:#16264d;--su:#5fd68f;--so:#8fb0ff;--sc:#ffc266;--sp:#c3a6ff;color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
@@ -49,8 +49,15 @@ h1{margin:0;font-size:1.4rem;line-height:1.1;letter-spacing:-.02em}h1 span{color
 .mw{position:relative}
 #map{height:38vh;height:38dvh;min-height:210px;background:var(--sea);border:1px solid var(--bd);border-radius:12px;isolation:isolate}
 .leg{position:absolute;left:8px;bottom:8px;z-index:2;display:flex;gap:10px;margin:0;padding:3px 10px;border-radius:99px;font-size:.72rem;color:var(--mu);background:color-mix(in srgb,var(--card) 90%,transparent);box-shadow:var(--sh);pointer-events:none}
-.leg i{display:inline-block;flex:none;width:9px;height:9px;border-radius:50%;margin-right:5px}
-.leg .lp{background:var(--rd)}.leg .lc{background:var(--bl)}
+.leg span{display:inline-flex;align-items:center}
+.leg svg{flex:none;width:13px;height:13px;margin-right:4px}
+.leg .lp{fill:var(--rd)}.leg .lc{fill:var(--bl)}.leg .lw{fill:var(--wt)}
+/* map markers: lightning bolt = electric, water drop = water */
+.mk{background:none;border:0;display:grid;place-items:center}
+.mk svg{display:block;width:var(--ms,24px);height:var(--ms,24px);fill:var(--c);stroke:#fff;stroke-width:1.7;stroke-linejoin:round;paint-order:stroke fill;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.5));transform-origin:50% 55%;transition:opacity .15s,transform .12s}
+.mk.P{--c:#ce1126}.mk.C{--c:#0038a8}.mk.W{--c:#0a94d6}
+.mk.nr svg{opacity:.5}.mk.dim svg{opacity:.4}.mk.dim.nr svg{opacity:.28}
+@media(hover:hover){.mk:hover svg{transform:scale(1.2)}}
 .leaflet-container{font:inherit;background:var(--sea)}
 .leaflet-tile-pane{filter:var(--tf)}
 .leaflet-container a{color:var(--lk)}
@@ -59,6 +66,19 @@ h1{margin:0;font-size:1.4rem;line-height:1.1;letter-spacing:-.02em}h1 span{color
 .leaflet-popup-content{margin:10px 12px;min-width:220px}
 .leaflet-container a.leaflet-popup-close-button{top:3px;right:3px;width:30px;height:30px;font:22px/30px system-ui;color:var(--mu)}
 
+/* utility-type switch */
+.mode{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--card);border:1px solid var(--bd);border-radius:14px}
+.mb{display:flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:6px 8px;border:0;border-radius:10px;background:transparent;color:var(--tx);text-align:left;transition:background-color .15s,color .15s}
+.mb svg{flex:none;width:26px;height:26px;stroke-width:1;stroke-linejoin:round}
+.mb[data-m=E] svg{fill:var(--bl);stroke:var(--bl)}.mb[data-m=W] svg{fill:var(--wt);stroke:var(--wt)}
+.mb span{display:block;min-width:0;line-height:1.15}.mb b{display:block;font-size:.95rem}.mb small{display:block;font-size:.72rem;color:var(--mu)}
+.mb[aria-pressed=true]{color:#fff}.mb[aria-pressed=true] small{color:rgba(255,255,255,.88)}
+.mb[data-m=E][aria-pressed=true]{background:var(--bl)}.mb[data-m=E][aria-pressed=true] svg{fill:var(--yl);stroke:var(--yl)}
+.mb[data-m=W][aria-pressed=true]{background:var(--wb)}.mb[data-m=W][aria-pressed=true] svg{fill:#fff;stroke:#fff}
+@media(hover:hover){.mb[aria-pressed=false]:hover{background:color-mix(in srgb,var(--bl) 8%,transparent)}}
+body[data-m=W] #vs{display:none}
+body[data-m=W] .chip[aria-pressed=true]{background:var(--wb);border-color:var(--wb)}
+.W .btn{background:var(--wb)}
 /* controls */
 .side{padding:6px 10px 0}
 .bar{display:grid;gap:8px;grid-template-columns:1fr 1fr;margin-bottom:8px}
@@ -78,7 +98,7 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),lin
 /* list */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px;align-content:start;padding-bottom:8px}
 .r{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 12px;text-align:left;background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--bl);border-radius:10px;content-visibility:auto;contain-intrinsic-size:auto 52px;transition:border-color .12s,background-color .12s}
-.r.P{border-left-color:var(--rd)}
+.r.P{border-left-color:var(--rd)}.r.W{border-left-color:var(--wt)}
 .r:active{background:color-mix(in srgb,var(--bl) 8%,var(--card))}
 .r.on{border-color:var(--bl);background:color-mix(in srgb,var(--bl) 10%,var(--card))}
 @media(hover:hover){.r:hover{border-color:var(--bl)}.chip:hover{border-color:var(--bl)}}
@@ -86,17 +106,19 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),lin
 .r b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .r small{display:block;font-size:.74rem;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .r .p{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.r .p.na{font-weight:400;color:var(--mu)}
+.r .p em{display:block;font-style:normal;font-size:.68rem;font-weight:400;color:var(--mu);text-align:right}
 .r.old .p{text-decoration:line-through;opacity:.5}
 .empty{grid-column:1/-1;text-align:center;padding:24px 8px;color:var(--mu)}
 .btn{background:var(--bl);color:#fff;border:0;border-radius:10px;padding:9px 16px;font-weight:600}
 .btn:active{transform:scale(.97)}
 
 /* popup card */
-.c{border-left:4px solid var(--bl);padding-left:10px}.c.P{border-left-color:var(--rd)}
+.c{border-left:4px solid var(--bl);padding-left:10px}.c.P{border-left-color:var(--rd)}.c.W{border-left-color:var(--wt)}
 .c .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding-right:18px}
 .c b{font-size:1rem}.c small{color:var(--mu)}
 .tg{flex:none;font-size:.68rem;font-weight:600;padding:1px 8px;border-radius:99px;color:var(--lk);background:color-mix(in srgb,var(--bl) 12%,transparent)}
 .P .tg{color:var(--rdt);background:color-mix(in srgb,var(--rd) 12%,transparent)}
+.W .tg{color:var(--wtt);background:color-mix(in srgb,var(--wt) 14%,transparent)}
 .rt{margin-top:8px;padding-top:8px;border-top:1px dashed var(--bd)}
 .pr{font-size:1.35rem;font-weight:700;letter-spacing:-.02em}.pr small{font-size:.75rem;font-weight:400}
 .bg{display:inline-block;margin-left:6px;padding:1px 8px;border:1px solid currentColor;border-radius:99px;font-size:.68rem;font-weight:600;vertical-align:middle}
@@ -104,7 +126,9 @@ select{background-image:linear-gradient(45deg,transparent 50%,var(--mu) 50%),lin
 .old .pr,.old .bg{opacity:.45}.old .pr{text-decoration:line-through}.od{color:var(--rdt);font-weight:600}
 .na{color:var(--mu);font-style:italic}
 details{margin-top:4px;font-size:.82rem}summary{cursor:pointer;color:var(--lk)}
-.dt{margin-top:8px;font-size:.78rem;line-height:1.5}.dt div{display:flex;gap:6px}.dt span{min-width:62px;color:var(--mu)}.dt a{word-break:break-all}.dt em{font-style:normal;opacity:.7}
+.dt{margin-top:8px;font-size:.78rem;line-height:1.5}.dt div{display:flex;gap:6px}.dt span{min-width:62px;color:var(--mu)}.dt a{word-break:break-all}.W .dt span{min-width:88px}
+.tt{width:100%;margin-top:8px;border-collapse:collapse;font-size:.78rem;font-variant-numeric:tabular-nums}.tt caption{text-align:left;color:var(--mu);padding-bottom:3px}.tt td{padding:3px 0}.tt td+td{text-align:right;font-weight:600}.tt tr+tr td{border-top:1px dashed var(--bd)}
+.ap{display:block;margin-top:6px;color:var(--mu);font-style:italic}.dt em{font-style:normal;opacity:.7}
 
 /* footer + dialog */
 footer{padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));font-size:.72rem;line-height:1.5;color:var(--mu)}
@@ -129,6 +153,7 @@ dialog h2{margin:0 0 8px;font-size:1.05rem}dialog p{margin:0 0 14px;font-size:.8
 .gl{stroke:var(--bd);stroke-width:1}.ax{fill:var(--mu);font-size:16px}
 .ln{fill:none;stroke:var(--bl);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.ar{fill:var(--bl);opacity:.1}
 .hp .ln{stroke:var(--rd)}.hp .ar{fill:var(--rd)}.hp .dot{fill:var(--rd)}
+.hwt .ln{stroke:var(--wt)}.hwt .ar{fill:var(--wt)}.hwt .dot{fill:var(--wt)}.hwt .cur circle{stroke:var(--wt)}
 .dot{fill:var(--bl)}.cur line{stroke:var(--mu);stroke-dasharray:3 3}.cur circle{fill:var(--card);stroke:var(--bl);stroke-width:3}.hp .cur circle{stroke:var(--rd)}
 #hd .chips{flex-wrap:wrap;overflow:visible;margin:8px 0;padding:0}
 .st{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:4px 0 10px}
@@ -159,22 +184,30 @@ input[type=search],select{font-size:14px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2.2C12 2.2 5.5 9.4 5.5 14.3a6.5 6.5 0 0 0 13 0C18.5 9.4 12 2.2 12 2.2z"/></symbol>
+</defs></svg>
 <header><div class="hw">
 <svg viewBox="0 0 64 64" role="img" aria-label="UtilityCheck logo"><rect width="64" height="64" rx="16" fill="#fcd116"/><path d="M36 6 14 36h14l-4 22 26-32H35z" fill="#0038a8" opacity=".18"/><path d="M16 33l11 11 22-24" fill="none" stroke="#0038a8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="12" r="6" fill="#ce1126"/></svg>
-<div><h1>Utility<span>Check</span></h1><p>Every electric company &amp; cooperative in the Philippines, in one list.</p></div>
+<div><h1>Utility<span>Check</span></h1><p>Every electric and water utility in the Philippines, on one map.</p></div>
 <button class="tb" id="tb" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 <div class="stripe"></div>
 <main class="app">
-<section class="mp" aria-label="Map"><div class="mw"><div id="map" role="application" aria-label="Map of Philippine electric utilities"></div>
-<p class="leg"><span><i class="lp"></i>Private</span><span><i class="lc"></i>Co-op</span></p></div></section>
+<section class="mp" aria-label="Map"><div class="mw"><div id="map" role="application" aria-label="Map of Philippine electric and water utilities"></div>
+<p class="leg"><span><svg class="lp" viewBox="0 0 24 24"><use href="#i-bolt"/></svg>Private</span><span><svg class="lc" viewBox="0 0 24 24"><use href="#i-bolt"/></svg>Co-op</span><span><svg class="lw" viewBox="0 0 24 24"><use href="#i-drop"/></svg>Water</span></p></div></section>
 <aside class="side">
 <div class="bar">
 <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="q" placeholder="Search utility or province…" aria-label="Search utility or province" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
+<div class="mode" id="md" role="group" aria-label="Utility type">
+<button type="button" class="mb" data-m="E" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bolt"/></svg><span><b>Electric</b><small>Coop / Company</small></span></button>
+<button type="button" class="mb" data-m="W" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-drop"/></svg><span><b>Water</b><small>District / Utility</small></span></button>
+</div>
 <select id="mo" aria-label="Billing month"></select>
 <select id="so" aria-label="Sort"><option value="az">Sort: A–Z</option><option value="lo">Cheapest first</option><option value="hi">Most expensive first</option></select>
 <select id="vs" aria-label="Verification status"><option value="all">Any status</option><option value="utility">Verified by utility</option><option value="official">Official advisory</option><option value="presyo">Via PRESYO-PH</option><option value="community">Community-reported</option></select>
-<label class="tgl"><input type="checkbox" id="hr"> With rate only</label>
+<label class="tgl"><input type="checkbox" id="hr"> <span id="hrt">With rate only</span></label>
 </div>
 <div class="chips" id="ch" role="group" aria-label="Filter utilities"><button type="button" class="chip" data-f="all" aria-pressed="true">All</button><button type="button" class="chip" data-f="P" aria-pressed="false">Private</button><button type="button" class="chip" data-f="C" aria-pressed="false">Co-op</button><button type="button" class="chip" data-f="L" aria-pressed="false">Luzon</button><button type="button" class="chip" data-f="V" aria-pressed="false">Visayas</button><button type="button" class="chip" data-f="M" aria-pressed="false">Mindanao</button></div>
 <p class="cnt" id="cnt" role="status" aria-live="polite"></p>
@@ -182,12 +215,13 @@ input[type=search],select{font-size:14px}
 <noscript><p class="empty">UtilityCheck needs JavaScript to show rates.</p></noscript>
 </aside>
 </main>
-<footer>Indicative monthly residential rates from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a>. Your utility's official bill always prevails. <button class="lb" id="ab" type="button">Disclaimer</button> · <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a><span id="rp"></span></footer>
+<footer>Electric: indicative monthly residential rates from <a href="https://presyo.icsc.ngo" target="_blank" rel="noopener">PRESYO-PH</a>. Water: district tariffs as of <span id="wasof"></span>. Your utility's official bill always prevails. <button class="lb" id="ab" type="button">Disclaimer</button> · <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a> · <a href="https://lwua.gov.ph" target="_blank" rel="noopener">LWUA</a><span id="rp"></span></footer>
 <dialog id="dl" aria-labelledby="dh"><h2 id="dh">About these rates</h2>
 <p>UtilityCheck is an independent, informational project. It is not affiliated with or endorsed by ERC, NEA, PRESYO-PH or any utility, and company names are used only to identify them.</p>
-<p>Rates are indicative monthly residential averages in ₱/kWh, mostly from <a href="https://presyo.icsc.ngo/" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), along with official advisories and community reports where labeled. They are not a utility bill. Actual charges vary by month, consumption tier and customer class, and your utility's official bill always prevails.</p>
+<p>Electric rates are indicative monthly residential averages in ₱/kWh, mostly from <a href="https://presyo.icsc.ngo/" target="_blank" rel="noopener">PRESYO-PH</a> (ICSC), along with official advisories and community reports where labeled. They are not a utility bill. Actual charges vary by month, consumption tier and customer class, and your utility's official bill always prevails.</p>
+<p>Water figures come from a water-rates database of water district tariffs. The headline price is the monthly bill at 20 m³, computed from each district's published rate tiers. Many districts have not updated their data recently (marked “Outdated”), and water district pins are placed at the district's city or at province level where marked “approximate”.</p>
 <p>We try to keep the data accurate and current, but we can't guarantee it is complete, correct or up to date, and it should not be your only basis for a financial decision.<span id="dce"></span></p>
-<p>Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a>.</p>
+<p>Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a> · <a href="https://lwua.gov.ph" target="_blank" rel="noopener">LWUA</a> · <a href="https://nwrb.gov.ph" target="_blank" rel="noopener">NWRB</a>.</p>
 <button class="btn" id="dc" type="button">Close</button></dialog>
 <dialog id="gt" aria-labelledby="gh"><h2 id="gh">Before you continue</h2>
 <ul><li>UtilityCheck is an independent, informational project, not affiliated with ERC, NEA or any utility.</li><li>Rates are indicative monthly averages and may be incomplete or outdated.</li><li>Your utility's official bill always prevails. Don't rely on this site alone for financial decisions.</li></ul>
@@ -630,6 +664,7 @@ const RATES={
 "TEI":{"2023-01":14.659,"2023-02":14.4397,"2023-03":14.5468,"2023-04":13.5835,"2023-05":13.2748,"2023-06":12.9498,"2023-07":11.8222,"2023-08":9.16,"2023-09":12.19,"2023-10":10.58,"2023-11":11.08,"2023-12":10.4,"2024-01":9.95,"2024-02":9.76,"2024-03":9.78,"2024-04":10.96,"2024-05":11.56,"2024-06":10.31,"2024-07":11.41,"2024-08":11.44,"2024-09":12.39,"2024-10":10.45,"2024-11":10.89,"2024-12":11.32,"2025-01":10.84,"2025-02":10.69,"2025-03":10.74,"2025-04":10.8,"2025-05":10.3,"2025-06":10.14,"2025-07":10.2,"2025-08":10.79,"2025-09":10.24,"2025-11":11.38,"2026-01":10.76,"2026-02":10.51,"2026-03":9.69,"2026-04":12.36,"2026-05":12.12,"2026-06":13,"2026-08":13.73,"2026-09":12.07}
 };
 </script>
+<script src="water-data.js"></script>
 <script>
 (()=>{
 "use strict";
@@ -639,41 +674,68 @@ const safe=v=>typeof v==="string"&&/^https:\/\//.test(v)?v:null;
 const lk=v=>{const s=safe(v);return s?`<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.replace(/^https:\/\/(www\.)?/,""))}</a>`:"<em>n/a</em>"};
 
 /* ---- data prep (once) ---- */
-R.forEach(u=>{u.a=u.a.replace(/&amp;/g,"&");u.k=(u.n+" "+u.a+" "+IS[u.i]).toLowerCase()});
-const BY=new Map(R.map(u=>[u.n,u]));
-const ALPHA=[...R].sort((a,b)=>a.n.localeCompare(b.n,"en",{numeric:true,sensitivity:"base"}));
+R.forEach(u=>{u.a=u.a.replace(/&amp;/g,"&");u.id=u.n;u.k=(u.n+" "+u.a+" "+IS[u.i]).toLowerCase()});
+/* water districts (data in water-data.js): t="W" */
+const WT=window.WATER||{periods:[],d:[],h:{},alias:{}},WP=WT.periods,WA=WT.alias||{};
+const WD=WT.d.map(a=>({id:"w"+a[0],t:"W",n:a[1],a:a[2],i:a[3],cat:a[4],asof:a[5],appr:a[6],sc:a[7],pop:a[8],av:a[9],mc:a[10],tr:[a[11],a[12],a[13],a[14],a[15]],c20:a[16],c30:a[17],la:a[18],ln:a[19],ex:a[20],h:WT.h[a[0]]||[],out:/as_of_over_2y|no_as_of_date/.test(a[21])}));
+WD.forEach(u=>{u.k=(u.n+" "+u.a+" "+(WA[u.a]||"")+" "+IS[u.i]+" water district").toLowerCase()});
+const ALL=[...R,...WD],BY=new Map(ALL.map(u=>[u.id,u]));
+const cmp=(a,b)=>a.n.localeCompare(b.n,"en",{numeric:true,sensitivity:"base"})||a.a.localeCompare(b.a);
+const ALPHA=[...R].sort(cmp),WALPHA=[...WD].sort(cmp);
 const HK={};for(const n in RATES){const h=RATES[n];HK[n]=h?Object.keys(h).sort().reverse():[]}
 const ym=m=>+m.slice(0,4)*12+ +m.slice(5,7)-1,now=new Date(),cur=now.getFullYear()*12+now.getMonth();
 const FM={},fm=m=>FM[m]||(FM[m]=new Date(+m.slice(0,4),+m.slice(5,7)-1,1).toLocaleString("en-PH",{month:"long",year:"numeric"}));
 const MS=[...new Set(Object.values(RATES).flatMap(h=>h?Object.keys(h):[]))].filter(m=>/^\d{4}-\d{2}$/.test(m)).sort().reverse();
-let MO=MS[0]||"latest",F="all",ACT=null,CUR=[],RC=new Map();const LC=new Map();
+let MODE="E",F="all",ACT=null,CUR=[],RC=new Map(),WRC=new Map(),KEY="",TOT=0;const LC=new Map();
+const MOS={E:MS[0]||"latest",W:WP[0]||"latest"};
 
 function pick(n,m){const h=RATES[n];if(!h||!(m in h))return null;const v=h[m],x=typeof v==="number"?{r:v,s:"presyo",u:PU}:Object.assign({},v);x.m=m;return x.r>0&&SRC[x.s]&&(x.s==="community"||x.u)?x:null}
 function latest(n){if(LC.has(n))return LC.get(n);let r=null;for(const m of HK[n]||[]){const x=pick(n,m);if(x){r=x;break}}LC.set(n,r);return r}
-function rate(n){if(MO==="latest")return latest(n);if(RC.has(n))return RC.get(n);const x=pick(n,MO);RC.set(n,x);return x}
-const isOld=x=>!!x&&MO==="latest"&&cur-ym(x.m)>2;
+function erate(n){const MO=MOS.E;if(MO==="latest")return latest(n);if(RC.has(n))return RC.get(n);const x=pick(n,MO);RC.set(n,x);return x}
+function wlatest(u){for(let i=0;i<u.h.length;i++)if(u.h[i]>0)return{r:u.h[i],m:WP[i],i};return null}
+function wrate(u){if(WRC.has(u.id))return WRC.get(u.id);const MO=MOS.W;let x=null;
+if(MO==="latest")x=wlatest(u);else{const i=WP.indexOf(MO),v=i<0?0:u.h[i];if(v>0)x={r:v,m:WP[i],i}}
+if(x){x.w=1;x.old=u.out&&(MO==="latest"||MO===WP[0])}
+WRC.set(u.id,x);return x}
+const rate=u=>u.t==="W"?wrate(u):erate(u.n);
+const isOld=x=>!!x&&(x.w?x.old:MOS.E==="latest"&&cur-ym(x.m)>2);
 
 /* ---- views ---- */
 function card(u){
-const x=rate(u.n),old=isOld(x),lt=latest(u.n),d=DET[u.n]||[];let r;
+if(u.t==="W")return wcard(u);
+const x=rate(u),old=isOld(x),lt=latest(u.n),d=DET[u.n]||[];let r;
 if(x){const su=safe(x.u),bd=x.b?`<details><summary>View breakdown</summary>${Object.entries(x.b).map(([k,v])=>`${esc(k)}: ₱${(+v).toFixed(4)}`).join("<br>")}</details>`:"";
 r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/kWh</small></span><span class="bg s-${x.s}">${SRC[x.s].l}</span><br><small>Billing month: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}${su?` · <a href="${esc(su)}" target="_blank" rel="noopener">Source</a>`:""}</small>${bd}</div>`}
-else r=MO!=="latest"&&lt?`<div class="rt na">No data for ${fm(MO)}. Latest: ₱${lt.r.toFixed(2)} (${fm(lt.m)})</div>`:'<div class="rt na">Rate not yet available</div>';
+else r=MOS.E!=="latest"&&lt?`<div class="rt na">No data for ${fm(MOS.E)}. Latest: ₱${lt.r.toFixed(2)} (${fm(lt.m)})</div>`:'<div class="rt na">Rate not yet available</div>';
 return `<div class="c ${u.t}${old?" old":""}"><div class="hd"><b>${esc(u.n)}</b><span class="tg">${u.t==="P"?"Private":"Co-op"}</span></div><small>${esc(u.a)} · ${IS[u.i]}</small>${r}<div class="dt"><div><span>Website</span>${lk(d[0])}</div><div><span>Facebook</span>${lk(d[1])}</div></div>${(HK[u.n]||[]).length?`<button type="button" class="btn hb" data-h="${esc(u.n)}">Rate history</button>`:""}</div>`}
 
-function row(u){const x=rate(u.n),old=isOld(x);
-return `<button type="button" class="r ${u.t}${old?" old":""}${u.n===ACT?" on":""}" data-n="${esc(u.n)}"><span class="n"><b>${esc(u.n)}</b><small>${esc(u.a)} · ${IS[u.i]}${old?" · outdated":""}</small></span><span class="p${x?"":" na"}">${x?"₱"+x.r.toFixed(2):"—"}</span></button>`}
+function row(u){const x=rate(u),old=isOld(x),w=u.t==="W";
+return `<button type="button" class="r ${u.t}${old?" old":""}${u.id===ACT?" on":""}" data-n="${esc(u.id)}"><span class="n"><b>${esc(u.n)}</b><small>${esc(u.a)} · ${IS[u.i]}${w&&u.cat?" · Cat "+esc(u.cat):""}${old?" · outdated":""}</small></span><span class="p${x?"":" na"}">${x?"₱"+x.r.toFixed(2)+(w?"<em>per 20 m³</em>":""):"—"}</span></button>`}
+
+/* water district popup */
+const f0=n=>n==null?"—":n.toLocaleString("en-PH"),pm=n=>n>0?"₱"+n.toFixed(2):"—";
+const fd=t=>{if(!t)return"—";const d=new Date(t+"T00:00:00");return isNaN(d)?"—":d.toLocaleDateString("en-PH",{year:"numeric",month:"short",day:"numeric"})};
+function wcard(u){
+const x=rate(u),old=isOld(x),lt=wlatest(u),t=u.tr;let r;
+if(x)r=`<div class="rt"><span class="pr">₱${x.r.toFixed(2)}<small>/month at 20 m³</small></span><br><small>Snapshot: ${fm(x.m)}${old?' · <span class="od">Outdated</span>':""}</small></div>`;
+else r=lt?`<div class="rt na">No data for ${fm(MOS.W)}. Latest: ₱${lt.r.toFixed(2)} (${fm(lt.m)})</div>`:'<div class="rt na">Rate not yet available</div>';
+const rows=[["Minimum (first 10 m³)",u.mc],["11–20 m³, per m³",t[0]],["21–30 m³, per m³",t[1]],["31–40 m³, per m³",t[2]],["41–50 m³, per m³",t[3]],["51 m³ and up, per m³",t[4]],["Bill at 30 m³",u.c30]];
+const tb=u.mc>0||t[0]>0?`<table class="tt"><caption>Latest rate schedule</caption>${rows.map(([k,v])=>`<tr><td>${k}</td><td>${pm(v)}</td></tr>`).join("")}</table>`:"";
+const dt=`<div class="dt"><div><span>Connections</span>${f0(u.sc)}</div><div><span>Population</span>${f0(u.pop)}</div><div><span>Avg. use</span>${u.av?u.av.toFixed(1)+" m³/month":"—"}</div><div><span>Category</span>${esc(u.cat||"—")}</div><div><span>Data as of</span>${fd(u.asof)}</div><div><span>Approved</span>${fd(u.appr)}</div></div>`;
+return `<div class="c W${old?" old":""}"><div class="hd"><b>${esc(u.n)}</b><span class="tg">Water district</span></div><small>${esc(u.a)} · ${IS[u.i]}</small>${r}${tb}${dt}${u.ex?"":'<small class="ap">Map pin is approximate (placed at province level).</small>'}${u.h.some(v=>v>0)?`<button type="button" class="btn hb" data-h="${esc(u.id)}">Rate history</button>`:""}</div>`}
 
 /* ---- rate history ---- */
 let HN=null,HRG="all";
 const mkey=i=>Math.floor(i/12)+"-"+String(i%12+1).padStart(2,"0");
 const fs=i=>new Date(Math.floor(i/12),i%12,1).toLocaleString("en-PH",{month:"short",year:"2-digit"});
 const peso=r=>"₱"+r.toFixed(2);
-function hist(n){const o=[];for(const m of[...(HK[n]||[])].reverse()){const x=pick(n,m);if(x)o.push({i:ym(m),r:x.r})}return o}
+function hist(id){const u=BY.get(id),o=[];
+if(u&&u.t==="W"){for(let k=WP.length-1;k>=0;k--){const v=u.h[k];if(v>0)o.push({i:ym(WP[k]),r:v})}return o}
+for(const m of[...(HK[id]||[])].reverse()){const x=pick(id,m);if(x)o.push({i:ym(m),r:x.r})}return o}
 function openHist(n){const u=BY.get(n);if(!u)return;HN=n;HRG="all";
-$("hn").textContent=n;$("hs").textContent=u.a+" · "+IS[u.i]+" · "+(u.t==="P"?"Private":"Co-op");
+$("hn").textContent=u.n;$("hs").textContent=u.t==="W"?u.a+" · "+IS[u.i]+" · Water district · monthly bill at 20 m³":u.a+" · "+IS[u.i]+" · "+(u.t==="P"?"Private":"Co-op");
 for(const b of $("hrg").children)b.setAttribute("aria-pressed",b.dataset.r==="all");
-$("hd").classList.toggle("hp",u.t==="P");renderHist();$("hd").showModal()}
+$("hd").classList.toggle("hp",u.t==="P");$("hd").classList.toggle("hwt",u.t==="W");renderHist();$("hd").showModal()}
 function renderHist(){
 const d=hist(HN);
 if(!d.length){$("hc").innerHTML='<p class="empty">No rate history yet.</p>';$("hst").innerHTML="";$("ht").innerHTML="";$("h1").textContent="—";$("h2").textContent="";return}
@@ -700,28 +762,31 @@ $("ht").innerHTML=[...d].reverse().map((p,k,a)=>{const q=a[k+1],df=q?p.r-q.r:0;r
 let raf=0,lastKey=null;
 const schedule=()=>{raf||(raf=requestAnimationFrame(()=>{raf=0;draw()}))};
 function draw(){
-const q=$("q").value.trim().toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked;
-const LS=ALPHA.filter(u=>{if(!(F==="all"||u.t===F||u.i===F)||(q&&!u.k.includes(q)))return false;const x=rate(u.n);return(vs==="all"||(x&&x.s===vs))&&(!hr||x)});
-if(so!=="az"){const v=u=>{const x=rate(u.n);return x?x.r:null};LS.sort((a,b)=>{const p=v(a),r=v(b);if(p===null)return r===null?0:1;if(r===null)return-1;return so==="lo"?p-r:r-p})}
+const q=$("q").value.trim().toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked,DS=MODE==="W"?WALPHA:ALPHA;
+const LS=DS.filter(u=>{if(!(F==="all"||u.t===F||u.i===F||"k"+u.cat===F)||(q&&!u.k.includes(q)))return false;const x=rate(u);return(MODE==="W"||vs==="all"||(x&&x.s===vs))&&(!hr||x)});
+if(so!=="az"){const v=u=>{const x=rate(u);return x?x.r:null};LS.sort((a,b)=>{const p=v(a),r=v(b);if(p===null)return r===null?0:1;if(r===null)return-1;return so==="lo"?p-r:r-p})}
 CUR=LS;
-$("cnt").textContent=LS.length+" of "+R.length+" utilities · "+LS.reduce((n,u)=>n+(rate(u.n)?1:0),0)+" with a rate ("+(MO==="latest"?"latest available":fm(MO))+")";
+$("cnt").textContent=LS.length+" of "+DS.length+(MODE==="W"?" water districts":" utilities")+" · "+LS.reduce((n,u)=>n+(rate(u)?1:0),0)+" with a "+(MODE==="W"?"bill":"rate")+" ("+(MOS[MODE]==="latest"?"latest available":fm(MOS[MODE]))+")";
 $("g").innerHTML=LS.length?LS.map(row).join(""):'<div class="empty">No matches.<br><br><button type="button" class="btn" data-reset>Clear filters</button></div>';
-syncMap(LS,[F,q,vs,hr].join("|"));
+KEY=[MODE,F,q,vs,hr].join("|");TOT=DS.length;syncMap(LS,KEY,TOT);
 }
 
 /* ---- map (created after first paint of the list; markers built once) ---- */
 let map=null,ML=null,ft=0;
 const HB=[[5,117],[20.8,127]];
-function mkStyle(u){return{radius:7,color:"#fff",weight:1.5,fillColor:u.t==="P"?"#ce1126":"#0038a8",fillOpacity:u.fo}}
-function syncMap(LS,key){
+const isAct=u=>(u.t==="W")===(MODE==="W");
+const stOf=u=>(isAct(u)?0:1)|(rate(u)?0:2);
+function mkIcon(u,st){return L.divIcon({className:"mk "+u.t+(st&1?" dim":"")+(st&2?" nr":""),html:'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-'+(u.t==="W"?"drop":"bolt")+'"/></svg>',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-10]})}
+/* both utility types live on the one map: the selected type is bright and follows the filters, the other is dimmed */
+function syncMap(LS,key,total){
 if(!map)return;
 const keep=new Set(LS);
-for(const u of R){const on=keep.has(u);
+for(const u of ALL){const act=isAct(u),on=act?keep.has(u):true;
 if(on&&!u.on){ML.addLayer(u.mk);u.on=1}else if(!on&&u.on){ML.removeLayer(u.mk);u.on=0}
-if(on){const fo=rate(u.n)?.95:.3;if(fo!==u.fo){u.fo=fo;u.mk.setStyle({fillOpacity:fo})}}}
+if(on){const st=stOf(u);if(st!==u.ms){u.ms=st;u.mk.setIcon(mkIcon(u,st));u.mk.setZIndexOffset(act?500:0)}}}
 if(key!==lastKey){lastKey=key;clearTimeout(ft);ft=setTimeout(()=>{if(!LS.length)return;
 const o={animate:true,duration:.4};
-if(LS.length===R.length)map.fitBounds(HB,o);else map.fitBounds(L.latLngBounds(LS.map(u=>[u.la,u.ln])),{...o,padding:[30,30],maxZoom:9})},100)}
+if(LS.length===total)map.fitBounds(HB,o);else map.fitBounds(L.latLngBounds(LS.map(u=>[u.la,u.ln])),{...o,padding:[30,30],maxZoom:9})},100)}
 }
 function setActive(n){ACT=n;const g=$("g");g.querySelectorAll(".r.on").forEach(e=>e.classList.remove("on"));
 if(n){const e=g.querySelector('[data-n="'+CSS.escape(n)+'"]');if(e){e.classList.add("on");if(matchMedia("(min-width:900px)").matches)e.scrollIntoView({block:"nearest"})}}}
@@ -731,6 +796,7 @@ const LL=window.L,el=$("map");
 if(!LL){el.innerHTML='<p class="cnt" style="padding:12px">Map could not load (check your internet connection). The list still works.</p>';return}
 map=LL.map(el,{minZoom:5,maxBounds:[[3,114],[22.5,129]],preferCanvas:true,zoomSnap:.5,zoomDelta:1});
 map.fitBounds(HB,{animate:false});
+const sz=()=>{const z=map.getZoom();el.style.setProperty("--ms",(z<6.5?15:z<7.5?18:z<8.5?21:24)+"px")};map.on("zoomend",sz);sz();
 map.createPane("land").style.zIndex=150;
 const sr=LL.svg({pane:"land"});
 [[[18.5,120.6],[18.6,121.4],[18.3,122.2],[17.2,122.45],[16.2,122.3],[15.2,121.6],[14.6,121.9],[14.1,122.3],[14.1,122.9],[13.9,123.3],[13.2,123.7],[13.0,124.1],[12.6,124.0],[12.9,123.6],[13.5,123.2],[13.9,122.8],[13.7,122.3],[13.6,121.7],[13.8,121.05],[14.2,120.6],[14.5,120.6],[14.7,120.5],[14.5,120.4],[14.75,120.3],[15.3,119.9],[16.1,119.75],[16.4,120.3],[17.5,120.35],[18.4,120.55]],
@@ -747,25 +813,35 @@ const sr=LL.svg({pane:"land"});
 ].forEach(p=>LL.polygon(p,{renderer:sr,className:"land",interactive:false}).addTo(map));
 LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap contributors"}).addTo(map);
 ML=LL.layerGroup().addTo(map);
-for(const u of R){u.fo=rate(u.n)?.95:.3;u.mk=LL.circleMarker([u.la,u.ln],mkStyle(u));u.mk.un=u.n;
+for(const u of ALL){const st=stOf(u);u.ms=st;u.mk=LL.marker([u.la,u.ln],{icon:mkIcon(u,st),title:u.n,keyboard:false,zIndexOffset:st&1?0:500});u.mk.un=u.id;
 u.mk.bindPopup(()=>card(u),{minWidth:240,maxWidth:300,autoPanPaddingTopLeft:[10,50],autoPanPaddingBottomRight:[10,10]})}
 map.on("popupopen",e=>{const s=e.popup._source;e.popup.options.maxHeight=Math.max(140,map.getSize().y-90);setActive(s&&s.un);const pe=e.popup.getElement&&e.popup.getElement(),hb=pe&&pe.querySelector("[data-h]");if(hb)hb.onclick=()=>openHist(hb.dataset.h)});
 map.on("popupclose",()=>setActive(null));
 if("ResizeObserver"in window)new ResizeObserver(()=>map.invalidateSize({animate:false})).observe(el);else addEventListener("resize",()=>map.invalidateSize());
-lastKey="all|||false";
-syncMap(CUR,lastKey);
+lastKey=KEY;
+syncMap(CUR,KEY,TOT);
 }
 
 /* ---- events ---- */
 $("q").addEventListener("input",schedule);
 for(const i of["so","vs","hr"])$(i).addEventListener("change",schedule);
-$("mo").addEventListener("change",e=>{MO=e.target.value;RC=new Map();schedule()});
+$("mo").addEventListener("change",e=>{MOS[MODE]=e.target.value;if(MODE==="W")WRC=new Map();else RC=new Map();schedule()});
+/* Electric / Water switch */
+const CH={E:$("ch").innerHTML,W:'<button type="button" class="chip" data-f="all" aria-pressed="true">All</button><button type="button" class="chip" data-f="L" aria-pressed="false">Luzon</button><button type="button" class="chip" data-f="V" aria-pressed="false">Visayas</button><button type="button" class="chip" data-f="M" aria-pressed="false">Mindanao</button><button type="button" class="chip" data-f="kA" aria-pressed="false" title="Category A: largest water districts">Cat. A</button><button type="button" class="chip" data-f="kB" aria-pressed="false" title="Category B">Cat. B</button><button type="button" class="chip" data-f="kC" aria-pressed="false" title="Category C">Cat. C</button><button type="button" class="chip" data-f="kD" aria-pressed="false" title="Category D: smallest water districts">Cat. D</button>'};
+const monthOpts=m=>(m==="W"?WP.map(p=>`<option value="${p}">${fm(p)}</option>`):MS.map(p=>`<option value="${p}">${fm(p)}</option>`)).join("")+'<option value="latest">Latest available</option>';
+function setMode(m){if(m===MODE)return;MODE=m;F="all";lastKey=null;ACT=null;document.body.dataset.m=m;
+for(const b of $("md").children)b.setAttribute("aria-pressed",b.dataset.m===m);
+$("ch").innerHTML=CH[m];$("mo").innerHTML=monthOpts(m);$("mo").value=MOS[m];
+const ph=m==="W"?"Search water district or province…":"Search utility or province…";$("q").placeholder=ph;$("q").setAttribute("aria-label",ph);
+$("mo").setAttribute("aria-label",m==="W"?"Data snapshot":"Billing month");$("hrt").textContent=m==="W"?"With bill only":"With rate only";
+if(map)map.closePopup();schedule()}
+$("md").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setMode(b.dataset.m)});
 $("ch").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.f;lastKey=null;
 for(const x of $("ch").children)x.setAttribute("aria-pressed",x===b);schedule()});
 $("g").addEventListener("click",e=>{
 if(e.target.closest("[data-reset]")){F="all";$("q").value="";$("vs").value="all";$("so").value="az";$("hr").checked=false;lastKey=null;
 for(const x of $("ch").children)x.setAttribute("aria-pressed",x.dataset.f==="all");schedule();return}
-const b=e.target.closest(".r");if(!b)return;const u=BY.get(b.dataset.n);if(!u)return;if(!map){openHist(u.n);return}if(!u.on)return;
+const b=e.target.closest(".r");if(!b)return;const u=BY.get(b.dataset.n);if(!u)return;if(!map){openHist(u.id);return}if(!u.on)return;
 const ll=[u.la,u.ln];
 if(!(map.getZoom()>=8&&map.getBounds().pad(-.2).contains(ll)))map.setView(ll,Math.max(map.getZoom(),9),{animate:false});
 u.mk.openPopup()});
@@ -797,8 +873,8 @@ const dl=$("dl");$("ab").addEventListener("click",()=>dl.showModal());$("dc").ad
 dl.addEventListener("click",e=>{if(e.target===dl)dl.close()});
 
 /* boot: list first, then map as soon as Leaflet (deferred) is ready */
-$("mo").innerHTML=MS.map(m=>`<option value="${m}">${fm(m)}</option>`).join("")+'<option value="latest">Latest available</option>';
-$("mo").value=MO;
+$("mo").innerHTML=monthOpts("E");$("mo").value=MOS.E;document.body.dataset.m="E";
+if(WT.asOf)$("wasof").textContent=fm(WT.asOf);
 draw();
 if(window.L)initMap();else addEventListener("DOMContentLoaded",initMap);
 })();

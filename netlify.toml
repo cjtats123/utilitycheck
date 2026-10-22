@@ -37,6 +37,13 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Water data: revalidate like the HTML so a rebuilt water-data.js goes live immediately
+[[headers]]
+  for = "/water-data.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Content-Type = "text/javascript; charset=utf-8"
+
 # Static assets: cache for a day
 [[headers]]
   for = "/*.png"
