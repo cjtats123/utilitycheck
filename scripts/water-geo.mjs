@@ -61,3 +61,21 @@ export const CITY = {
   "Lamitan City|Basilan":[6.65,122.1333],"Marawi City|Lanao Del Sur":[8.0,124.2928],"Baguio City|Benguet":[16.4023,120.596],
   "Butuan City|Agusan Del Norte":[8.9475,125.5406],"Bislig City|Surigao Del Sur":[8.2147,126.3158],"Tandag City|Surigao Del Sur":[9.0786,126.1986]
 };
+
+// Land-safe layout overrides for provinces whose center/spiral would otherwise land in a bay, gulf or strait.
+// [lat, lon, maxRadiusDeg]: spiral is anchored on an inland point and its radius is capped so it stays on land.
+export const INLAND = {
+  "Pangasinan":[15.95,120.55,0.30],"Bataan":[14.66,120.48,0.09],"Batangas":[13.88,121.12,0.20],"Cavite":[14.32,120.95,0.12],
+  "Zambales":[15.40,120.08,0.11],"Bulacan":[14.88,120.97,0.15],"Pampanga":[15.07,120.70,0.12],"La Union":[16.55,120.45,0.10],
+  "Ilocos Norte":[18.10,120.65,0.12],"Ilocos Sur":[17.30,120.55,0.10],"Cagayan":[17.75,121.80,0.25],"Isabela":[16.90,121.85,0.25],
+  "Quezon":[13.95,121.78,0.15],"Camarines Sur":[13.55,123.30,0.20],"Camarines Norte":[14.15,122.80,0.07],"Albay":[13.20,123.58,0.10],
+  "Sorsogon":[12.90,124.00,0.08],"Catanduanes":[13.75,124.28,0.08],"Masbate":[12.20,123.55,0.07],"Cebu":[10.32,123.80,0.10],
+  "Bohol":[9.85,124.15,0.12],"Negros Occidental":[10.45,123.00,0.20],"Negros Oriental":[9.55,123.10,0.12],"Iloilo":[10.95,122.50,0.22],
+  "Antique":[11.15,122.05,0.10],"Aklan":[11.65,122.35,0.07],"Capiz":[11.45,122.65,0.08],"Leyte":[10.95,124.85,0.14],
+  "Western Samar":[11.75,125.0,0.12],"Eastern Samar":[11.45,125.45,0.08],"Northern Samar":[12.35,124.55,0.08],"Southern Leyte":[10.30,125.0,0.05],
+  "Zamboanga Del Sur":[7.85,123.45,0.12],"Zamboanga Del Norte":[8.45,123.20,0.10],"Zamboanga Sibugay":[7.75,122.65,0.08],
+  "Misamis Occidental":[8.35,123.65,0.08],"Misamis Oriental":[8.50,124.75,0.10],"Lanao Del Norte":[8.00,124.00,0.08],
+  "Davao Del Sur":[6.75,125.35,0.06],"Agusan Del Norte":[8.95,125.55,0.06],"Surigao Del Norte":[9.60,125.55,0.06],
+  "Surigao Del Sur":[8.75,126.15,0.10],"Palawan":[9.75,118.75,0.12],"Occidental Mindoro":[13.0,120.85,0.10],"Oriental Mindoro":[12.95,121.25,0.10],
+  "Rizal":[14.60,121.25,0.07],"Laguna":[14.22,121.35,0.10],"Aurora":[15.85,121.55,0.05],"Romblon":[12.55,122.30,0.05]
+};

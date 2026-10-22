@@ -49,7 +49,7 @@ and commit the regenerated `water-data.js`.
 **Map pins.** The water dataset has no coordinates, so pins are placed like this:
 1. exact city coordinates for ~70 cities (`scripts/water-geo.mjs`, `CITY`) → exact pin;
 2. anything in `scripts/water-coords.json` (made by the geocoder below) → exact pin;
-3. otherwise the province center, fanned out in a small spiral so each district stays clickable → **approximate** pin (the popup says so).
+3. otherwise an inland anchor per province (`INLAND` in `water-geo.mjs`, radius capped so pins stay on land) fanned out in a small spiral → **approximate** pin (the popup says so).
 
 To make the remaining pins exact (needs internet; ~1 request per second, resumable, uses OpenStreetMap Nominatim):
 

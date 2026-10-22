@@ -11,7 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { PROV, ISLAND, CITY, prettyProv, PROV_DISPLAY } from "./water-geo.mjs";
+import { PROV, ISLAND, CITY, INLAND, prettyProv, PROV_DISPLAY } from "./water-geo.mjs";
 
 const DIR = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.resolve(DIR, "..");
 const args = process.argv.slice(2), opt = n => { const i = args.indexOf("--" + n); return i >= 0 ? args[i + 1] : null; };
@@ -59,11 +59,12 @@ const rows = latest.map(r => {
 });
 const missingProv = new Set();
 for (const [p, list] of Object.entries(byProv)) {
-  const c = PROV[p]; if (!c) { missingProv.add(p); continue; }
+  const ov = INLAND[p], c = ov || PROV[p]; if (!c) { missingProv.add(p); continue; }
   list.sort((a, b) => a.r.name.localeCompare(b.r.name));
   const GA = Math.PI * (3 - Math.sqrt(5));              // golden angle spiral
   list.forEach((o, i) => {
-    const rad = 0.045 * Math.sqrt(i + 0.6), th = i * GA;  // ~5 km per step, so pins fan out without overlapping
+    const k = ov ? Math.min(0.045, ov[2] / Math.sqrt(list.length + 0.6)) : 0.045;
+    const rad = k * Math.sqrt(i + 0.6), th = i * GA;  // ~5 km per step, so pins fan out without overlapping
     o.ll = [c[0] + rad * Math.sin(th), c[1] + rad * Math.cos(th) / Math.cos(c[0] * Math.PI / 180)];
   });
 }
