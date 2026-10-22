@@ -1,6 +1,8 @@
 # UtilityCheck – Philippine Electric & Water Utilities
 
-Static single-page site (no build step). Electric cooperatives/companies (⚡ lightning-bolt pins) and water districts (💧 water-drop pins) share one map; the **Electric / Water** switch under the search box chooses which one the list, filters and search work on (the other type stays on the map, dimmed). Leaflet is loaded from cdnjs and map tiles from OpenStreetMap, so visitors need an internet connection for the map (the list works without it).
+Static single-page site (no build step). Electric cooperatives/companies (⚡ lightning-bolt pins) and water districts (💧 water-drop pins) share one map; the **Electric / All / Water** switch under the search box chooses what the list, filters and search work on. With Electric or Water selected, the other type stays on the map but is slightly blurred; **All** lists and maps both types at full sharpness (price sorting is disabled there because ₱/kWh and ₱ per 20 m³ aren't comparable).
+
+On every visit an animated UtilityCheck logo splash plays while the list, water data and map load, then the **Disclaimer** appears and must be accepted with **I Accept** (it is intentionally not remembered between visits). Leaflet is loaded from cdnjs and map tiles from OpenStreetMap, so visitors need an internet connection for the map (the list works without it).
 
 ## Deploy to Netlify
 **Drag & drop:** Netlify → Add new site → Deploy manually → drop this folder.
@@ -34,6 +36,22 @@ node scripts/fetch-rates.mjs --dry        # report only, don't write
 **If Node can't reach the site** (office network/firewall) but your browser can: open https://presyo.icsc.ngo in the browser, press F12, open the Console, paste the contents of `scripts/browser-export.js` and press Enter (Chrome may ask you to type `allow pasting` first). It downloads `rates.json`; put it in the repo folder and run `node scripts/fetch-rates.mjs --file rates.json`.
 
 It is safe to re-run (idempotent) and run it again each month to pick up the new one. Object-style entries (`{r,s,u,b}`) are never modified. API names are matched to the site's names (`NEECO 2 - A1` -> `NEECO II Area 1`, `NUVELCO` -> `NUVELECO`, etc.); anything unmatched is listed at the end of the run. Fix spelling differences in the `ALIASES` map at the top of the script.
+
+## Electric map pins
+Pins sit at each utility's head office. To fix or re-check them:
+
+```
+node scripts/set-electric-pins.mjs --dry     # preview
+node scripts/set-electric-pins.mjs           # apply to index.html (idempotent, no network needed)
+```
+It applies, in priority order, `scripts/electric-coords.json` (geocoded) → `FIX` in `scripts/electric-geo.mjs` (hand-verified head offices) → the existing value; then fans out pins that were stacked on top of each other and warns about pins outside the Philippines or far from the province named in the area text.
+
+To look up more exact head-office pins (needs internet, ~1 request/second, OpenStreetMap Nominatim):
+```
+node scripts/geocode-electric.mjs --email you@example.com
+node scripts/set-electric-pins.mjs
+```
+Add the head-office town to `HQ` in `electric-geo.mjs` for any utility the geocoder rejects, and add confirmed coordinates to `FIX`.
 
 ## Water districts
 Source files live in `scripts/data/` (`water_districts_latest.csv`, `water_districts_history.csv`, `water_districts_latest.json`). The headline figure is the **monthly bill at 20 m³**; the popup shows the tiered ₱/m³ schedule and the bill at 30 m³, and the history chart plots the 20 m³ bill over the semi-annual snapshots.

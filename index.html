@@ -13,6 +13,7 @@
 <meta property="og:description" content="Compare electricity rates and water district bills across the Philippines on one map.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<noscript><style>#splash{display:none!important}</style></noscript>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
@@ -54,9 +55,9 @@ h1{margin:0;font-size:1.4rem;line-height:1.1;letter-spacing:-.02em}h1 span{color
 .leg .lp{fill:var(--rd)}.leg .lc{fill:var(--bl)}.leg .lw{fill:var(--wt)}
 /* map markers: lightning bolt = electric, water drop = water */
 .mk{background:none;border:0;display:grid;place-items:center}
-.mk svg{display:block;width:var(--ms,24px);height:var(--ms,24px);fill:var(--c);stroke:#fff;stroke-width:1.7;stroke-linejoin:round;paint-order:stroke fill;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.5));transform-origin:50% 55%;transition:opacity .15s,transform .12s}
+.mk svg{display:block;width:var(--ms,24px);height:var(--ms,24px);fill:var(--c);stroke:#fff;stroke-width:1.7;stroke-linejoin:round;paint-order:stroke fill;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.5));transform-origin:50% 55%;transition:opacity .15s,transform .12s,filter .2s}
 .mk.P{--c:#ce1126}.mk.C{--c:#0038a8}.mk.W{--c:#0a94d6}
-.mk.nr svg{opacity:.5}.mk.dim svg{opacity:.4}.mk.dim.nr svg{opacity:.28}
+.mk.nr svg{opacity:.5}.mk.dim svg{opacity:.75;filter:blur(1.4px) saturate(.8)}.mk.dim.nr svg{opacity:.5;filter:blur(1.4px) saturate(.65)}
 @media(hover:hover){.mk:hover svg{transform:scale(1.2)}}
 .leaflet-container{font:inherit;background:var(--sea)}
 .leaflet-tile-pane{filter:var(--tf)}
@@ -67,14 +68,16 @@ h1{margin:0;font-size:1.4rem;line-height:1.1;letter-spacing:-.02em}h1 span{color
 .leaflet-container a.leaflet-popup-close-button{top:3px;right:3px;width:30px;height:30px;font:22px/30px system-ui;color:var(--mu)}
 
 /* utility-type switch */
-.mode{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--card);border:1px solid var(--bd);border-radius:14px}
-.mb{display:flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:6px 8px;border:0;border-radius:10px;background:transparent;color:var(--tx);text-align:left;transition:background-color .15s,color .15s}
-.mb svg{flex:none;width:26px;height:26px;stroke-width:1;stroke-linejoin:round}
-.mb[data-m=E] svg{fill:var(--bl);stroke:var(--bl)}.mb[data-m=W] svg{fill:var(--wt);stroke:var(--wt)}
-.mb span{display:block;min-width:0;line-height:1.15}.mb b{display:block;font-size:.95rem}.mb small{display:block;font-size:.72rem;color:var(--mu)}
+.mode{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:var(--card);border:1px solid var(--bd);border-radius:14px}
+.mb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;padding:6px 4px;border:0;border-radius:10px;background:transparent;color:var(--tx);text-align:center;transition:background-color .15s,color .15s}
+.mb svg{flex:none;width:24px;height:24px;stroke-width:1;stroke-linejoin:round}
+.mb[data-m=E] svg{fill:var(--bl);stroke:var(--bl)}.mb[data-m=W] svg{fill:var(--wt);stroke:var(--wt)}.mb[data-m=A] svg{fill:var(--tx);stroke:var(--tx)}
+.mb span{display:block;min-width:0;line-height:1.15}.mb b{display:block;font-size:.92rem}.mb small{display:block;font-size:.72rem;color:var(--mu)}
 .mb[aria-pressed=true]{color:#fff}.mb[aria-pressed=true] small{color:rgba(255,255,255,.88)}
 .mb[data-m=E][aria-pressed=true]{background:var(--bl)}.mb[data-m=E][aria-pressed=true] svg{fill:var(--yl);stroke:var(--yl)}
 .mb[data-m=W][aria-pressed=true]{background:var(--wb)}.mb[data-m=W][aria-pressed=true] svg{fill:#fff;stroke:#fff}
+.mb[data-m=A][aria-pressed=true]{background:linear-gradient(135deg,var(--bl),var(--wb))}.mb[data-m=A][aria-pressed=true] svg{fill:#fff;stroke:#fff}
+body[data-m=A] #mo{display:none}
 @media(hover:hover){.mb[aria-pressed=false]:hover{background:color-mix(in srgb,var(--bl) 8%,transparent)}}
 body[data-m=W] #vs{display:none}
 body[data-m=W] .chip[aria-pressed=true]{background:var(--wb);border-color:var(--wb)}
@@ -139,7 +142,7 @@ dialog h2{margin:0 0 8px;font-size:1.05rem}dialog p{margin:0 0 14px;font-size:.8
 
 /* first-visit notice */
 #gt{width:min(460px,calc(100vw - 32px))}
-#gt h2{font-size:1.15rem}#gt ul{margin:0 0 14px;padding-left:20px;font-size:.9rem;color:var(--mu)}#gt li+li{margin-top:6px}
+#gt h2{font-size:1.15rem;display:flex;align-items:center;gap:8px}#gt h2 i{font-style:normal;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--yl);color:#5a4500;font-size:1rem}#gt ul{margin:0 0 14px;padding-left:20px;font-size:.9rem;color:var(--mu)}#gt li+li{margin-top:6px}
 #gt .row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}#gt .btn{flex:1 1 auto;min-height:44px}
 /* rate history */
 .hb{width:100%;margin-top:10px;padding:8px 12px;font-size:.85rem}
@@ -181,11 +184,76 @@ header,.stripe,footer{flex:none}
 input[type=search],select{font-size:14px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/* splash / loading screen */
+#splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;color:#fff;background:radial-gradient(120% 90% at 50% 38%,#12409f 0%,#0a2a7a 48%,#061747 100%);clip-path:circle(150% at 50% 42%);transition:clip-path .8s cubic-bezier(.7,0,.25,1),visibility 0s .8s;touch-action:manipulation}
+#splash.out{clip-path:circle(0% at 50% 42%);visibility:hidden;pointer-events:none}
+#splash::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(115deg,transparent 0 38px,rgba(252,209,22,.06) 38px 40px)}
+#splash::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:linear-gradient(90deg,var(--bl) 33%,var(--yl) 33% 66%,var(--rd) 66%)}
+.sp-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center}
+#splash.out .sp-in{animation:spOut .38s cubic-bezier(.5,-.4,.8,.4) forwards}
+.sp-logo{position:relative;width:132px;height:132px;display:grid;place-items:center;border-radius:34px;cursor:pointer;outline-offset:10px;transform:perspective(520px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .18s ease-out}
+.sp-mark{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 14px 22px rgba(0,0,0,.4));animation:spTile .9s cubic-bezier(.34,1.56,.64,1) backwards}
+.sp-ghost{opacity:.22;animation:spFlick 1.3s ease-in-out .7s infinite}
+.sp-check{fill:none;stroke:#0038a8;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0;animation:spDraw .6s cubic-bezier(.6,0,.2,1) .55s backwards}
+.sp-dot{transform-box:fill-box;transform-origin:center;animation:spDot .5s cubic-bezier(.34,1.8,.64,1) 1s backwards}
+.sp-ping{fill:none;stroke:#ce1126;stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:spPing 1.6s ease-out 1.3s infinite}
+.sp-ring{position:absolute;inset:-26px;width:calc(100% + 52px);height:calc(100% + 52px);pointer-events:none;animation:spSpin 2.2s linear infinite}
+.sp-ring circle{fill:none;stroke:rgba(252,209,22,.9);stroke-width:3;stroke-linecap:round;stroke-dasharray:90 490}
+.sp-ring.b circle{stroke:rgba(56,189,248,.9);stroke-dasharray:60 520}.sp-ring.b{animation-duration:3.1s;animation-direction:reverse;inset:-38px;width:calc(100% + 76px);height:calc(100% + 76px)}
+.sp-orb{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;animation:spOrbit 3.1s linear infinite;pointer-events:none}
+.sp-orb svg{width:100%;height:100%;stroke:#fff;stroke-width:1.5;stroke-linejoin:round;paint-order:stroke fill;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
+.sp-orb.e svg{fill:var(--yl)}.sp-orb.w{animation-delay:-1.55s}.sp-orb.w svg{fill:#38bdf8}
+.sp-title{font-size:2rem;font-weight:800;letter-spacing:-.03em;line-height:1;margin-top:46px;animation:spUp .6s ease-out .9s backwards}
+.sp-title span{color:var(--yl)}
+.sp-sub{margin:0;min-height:1.3em;font-size:.88rem;opacity:.85;animation:spUp .6s ease-out 1.1s backwards}
+.sp-bar{width:min(240px,64vw);height:6px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden;animation:spUp .6s ease-out 1.2s backwards}
+.sp-bar i{display:block;width:6%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--yl),#fff);transition:width .5s ease-out}
+.sp-hint{margin:0;font-size:.72rem;opacity:.55;animation:spUp .6s ease-out 1.6s backwards}
+.sp-logo.zap .sp-mark{animation:spZap .55s cubic-bezier(.3,1.6,.5,1)}
+.sp-logo.zap .sp-ghost{animation:spFlash .55s ease-out}
+.sp-logo.zap::after{content:"";position:absolute;inset:0;border-radius:34px;border:3px solid var(--yl);animation:spBurst .6s ease-out forwards;pointer-events:none}
+@keyframes spTile{from{opacity:0;transform:scale(.15) rotate(-24deg)}}
+@keyframes spDraw{from{stroke-dashoffset:1}}
+@keyframes spDot{from{transform:scale(0)}}
+@keyframes spPing{from{transform:scale(1);opacity:.9}to{transform:scale(2.6);opacity:0}}
+@keyframes spFlick{0%,100%{opacity:.18}45%{opacity:.5}55%{opacity:.12}70%{opacity:.42}}
+@keyframes spSpin{to{transform:rotate(360deg)}}
+@keyframes spOrbit{from{transform:rotate(0) translateX(96px) rotate(0)}to{transform:rotate(360deg) translateX(96px) rotate(-360deg)}}
+@keyframes spUp{from{opacity:0;transform:translateY(12px)}}
+@keyframes spOut{40%{transform:scale(.9)}to{transform:scale(1.7);opacity:0}}
+@keyframes spZap{0%{transform:scale(1)}30%{transform:scale(.82) rotate(-5deg)}65%{transform:scale(1.12) rotate(3deg)}100%{transform:scale(1)}}
+@keyframes spFlash{0%{opacity:.9}100%{opacity:.22}}
+@keyframes spBurst{from{transform:scale(1);opacity:.9}to{transform:scale(1.7);opacity:0}}
+/* the app pops in as the splash opens */
+body.ready header{animation:appPop .55s cubic-bezier(.2,.9,.3,1.2) both}
+body.ready .stripe{animation:appPop .55s cubic-bezier(.2,.9,.3,1.2) .06s both}
+body.ready .mp{animation:appPop .6s cubic-bezier(.2,.9,.3,1.2) .12s both}
+body.ready .side{animation:appPop .6s cubic-bezier(.2,.9,.3,1.2) .2s both}
+body.ready footer{animation:appPop .6s ease-out .3s both}
+@keyframes appPop{from{opacity:0;transform:translateY(16px) scale(.96)}}
+@media(prefers-reduced-motion:reduce){#splash,#splash *,body.ready :is(header,.stripe,.mp,.side,footer){animation:none!important}#splash{clip-path:none;transition:none}#splash.out{visibility:hidden}.sp-logo{transform:none}}
 </style>
 </head>
 <body>
+<div id="splash" role="status" aria-live="polite" aria-label="Loading UtilityCheck">
+<div class="sp-in">
+<div class="sp-logo" id="spl" tabindex="0" role="button" aria-label="UtilityCheck logo. Activate for a spark.">
+<svg class="sp-ring" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="92"/></svg>
+<svg class="sp-ring b" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="92"/></svg>
+<span class="sp-orb e" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-bolt"/></svg></span>
+<span class="sp-orb w" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-drop"/></svg></span>
+<svg class="sp-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#fcd116"/><path class="sp-ghost" d="M36 6 14 36h14l-4 22 26-32H35z" fill="#0038a8"/><path class="sp-check" pathLength="1" d="M16 33l11 11 22-24"/><circle class="sp-ping" cx="52" cy="12" r="6"/><circle class="sp-dot" cx="52" cy="12" r="6" fill="#ce1126"/></svg>
+</div>
+<div class="sp-title">Utility<span>Check</span></div>
+<p class="sp-sub" id="sps">Warming up the map…</p>
+<div class="sp-bar" aria-hidden="true"><i id="spb"></i></div>
+<p class="sp-hint">Tap the logo ⚡</p>
+</div>
+</div>
+<script>setTimeout(function(){var s=document.getElementById("splash");if(s)s.classList.add("out")},12000)</script>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="i-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+<symbol id="i-all" viewBox="0 0 24 24"><polygon points="8 2.5 2.5 12 7 12 6 19.5 12.5 9.5 8.5 9.5 8 2.5"/><path d="M17 8.5S13.6 12.7 13.6 15.5a3.4 3.4 0 0 0 6.8 0C20.4 12.7 17 8.5 17 8.5z"/></symbol>
 <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2.2C12 2.2 5.5 9.4 5.5 14.3a6.5 6.5 0 0 0 13 0C18.5 9.4 12 2.2 12 2.2z"/></symbol>
 </defs></svg>
 <header><div class="hw">
@@ -202,6 +270,7 @@ input[type=search],select{font-size:14px}
 <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="q" placeholder="Search utility or province…" aria-label="Search utility or province" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
 <div class="mode" id="md" role="group" aria-label="Utility type">
 <button type="button" class="mb" data-m="E" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bolt"/></svg><span><b>Electric</b><small>Coop / Company</small></span></button>
+<button type="button" class="mb" data-m="A" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-all"/></svg><span><b>All</b><small>Electric + Water</small></span></button>
 <button type="button" class="mb" data-m="W" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-drop"/></svg><span><b>Water</b><small>District / Utility</small></span></button>
 </div>
 <select id="mo" aria-label="Billing month"></select>
@@ -223,9 +292,9 @@ input[type=search],select{font-size:14px}
 <p>We try to keep the data accurate and current, but we can't guarantee it is complete, correct or up to date, and it should not be your only basis for a financial decision.<span id="dce"></span></p>
 <p>Check official sources: <a href="https://nea.gov.ph" target="_blank" rel="noopener">NEA</a> · <a href="https://www.erc.gov.ph" target="_blank" rel="noopener">ERC</a> · <a href="https://lwua.gov.ph" target="_blank" rel="noopener">LWUA</a> · <a href="https://nwrb.gov.ph" target="_blank" rel="noopener">NWRB</a>.</p>
 <button class="btn" id="dc" type="button">Close</button></dialog>
-<dialog id="gt" aria-labelledby="gh"><h2 id="gh">Before you continue</h2>
+<dialog id="gt" aria-labelledby="gh"><h2 id="gh"><i aria-hidden="true">!</i>Disclaimer</h2>
 <ul><li>UtilityCheck is an independent, informational project, not affiliated with ERC, NEA or any utility.</li><li>Rates are indicative monthly averages and may be incomplete or outdated.</li><li>Your utility's official bill always prevails. Don't rely on this site alone for financial decisions.</li></ul>
-<div class="row"><button class="btn" id="ga" type="button">I understand, continue</button><button class="lb" id="gf" type="button">Read full disclaimer</button></div></dialog>
+<div class="row"><button class="btn" id="ga" type="button" autofocus>I Accept</button><button class="lb" id="gf" type="button">Read full disclaimer</button></div></dialog>
 <dialog id="hd" aria-labelledby="hn"><div class="dh"><div><h2 id="hn"></h2><small id="hs"></small></div><button class="x" id="hx" type="button" aria-label="Close">✕</button></div>
 <div class="hv"><b id="h1"></b><span id="h2"></span></div>
 <div id="hc"></div>
@@ -235,9 +304,9 @@ input[type=search],select{font-size:14px}
 <script>
 // code|type(P=private,C=cooperative)|island(L/V/M)|area
 const R=`MERALCO|P|L|Metro Manila, Rizal, Cavite, Bulacan, Laguna, Batangas, Quezon|14.5856|121.0614
-SFELAPCO|P|L|San Fernando, Pampanga|15.0286|120.6898
+SFELAPCO|P|L|San Fernando, Pampanga|15.0146|120.6898
 AEC|P|L|Angeles City, Pampanga|15.1450|120.5887
-CELCOR|P|L|Cabanatuan City, Nueva Ecija|15.4868|120.9674
+CELCOR|P|L|Cabanatuan City, Nueva Ecija|15.5008|120.9674
 DECORP|P|L|Dagupan City, Pangasinan|16.0433|120.3333
 PENELCO|P|L|Bataan|14.6761|120.5360
 CEDC|P|L|Clark Freeport, Pampanga|15.1850|120.5450
@@ -261,31 +330,31 @@ ISELCO I|C|L|Isabela|16.9285|121.7734
 ISELCO II|C|L|Isabela|16.6878|121.5489
 NUVELECO|C|L|Nueva Vizcaya|16.4825|121.1503
 QUIRELCO|C|L|Quirino|16.5167|121.5167
-NEECO I|C|L|Nueva Ecija|15.4868|120.9674
+NEECO I|C|L|Nueva Ecija|15.4728|120.9674
 NEECO II Area 1|C|L|Nueva Ecija|15.6600|120.7700
 NEECO II Area 2|C|L|Nueva Ecija|15.5878|121.0100
-PELCO I|C|L|Pampanga|15.0286|120.6898
+PELCO I|C|L|Pampanga|15.0426|120.6898
 PELCO II|C|L|Pampanga|15.0870|120.6150
 PELCO III|C|L|Pampanga|14.9760|120.6500
-TARELCO I|C|L|Tarlac|15.4755|120.5963
+TARELCO I|C|L|Tarlac|15.4957|120.5922
 TARELCO II|C|L|Tarlac|15.4950|120.5700
 ZAMECO I|C|L|Zambales|15.3300|119.9800
 ZAMECO II|C|L|Zambales|15.4400|119.9600
 AURELCO|C|L|Aurora|15.7578|121.5620
-BATELEC I|C|L|Batangas|13.9400|121.1600
-BATELEC II|C|L|Batangas|13.8900|121.0200
+BATELEC I|C|L|Batangas|14.0722|120.6333
+BATELEC II|C|L|Batangas|13.9411|121.1631
 FLECO|C|L|First Laguna|14.2700|121.4600
 QUEZELCO I|C|L|Quezon|13.9340|121.6170
 QUEZELCO II|C|L|Quezon|14.0000|122.1200
 MARELCO|C|L|Marinduque|13.4776|121.9030
-OMECO|C|L|Occidental Mindoro|12.9750|120.9360
-ORMECO|C|L|Oriental Mindoro|12.8300|121.4400
+OMECO|C|L|Occidental Mindoro|12.3526|121.0675
+ORMECO|C|L|Oriental Mindoro|13.4117|121.1803
 PALECO|C|L|Palawan|9.7392|118.7353
 BISELCO|C|L|Busuanga, Palawan|12.0700|120.0970
 ROMELCO|C|L|Romblon|12.5800|122.2700
 TIELCO|C|L|Tablas Island, Romblon|12.3950|122.0660
-CASURECO I|C|L|Camarines Sur|13.6200|123.1800
-CASURECO II|C|L|Camarines Sur|13.6200|123.1850
+CASURECO I|C|L|Camarines Sur|13.6340|123.1825
+CASURECO II|C|L|Camarines Sur|13.6060|123.1825
 CASURECO III|C|L|Camarines Sur|13.4170|123.4120
 CASURECO IV|C|L|Camarines Sur|13.5000|123.3200
 CANORECO|C|L|Camarines Norte|14.1150|122.9550
@@ -330,11 +399,11 @@ ILPI|P|M|Iligan Light &amp; Power|8.2280|124.2450
 MORESCO I|C|M|Misamis Oriental|8.5700|124.5300
 MORESCO II|C|M|Misamis Oriental|8.5500|124.7600
 MOELCI I|C|M|Misamis Occidental|8.4856|123.8056
-MOELCI II|C|M|Misamis Occidental|8.1800|123.8400
+MOELCI II|C|M|Misamis Occidental|8.1660|123.8400
 FIBECO|C|M|Bukidnon|7.9064|125.0938
 BUSECO|C|M|Bukidnon Second|8.1575|125.1278
 CAMELCO|C|M|Camiguin|9.1730|124.7260
-LANECO|C|M|Lanao del Norte|8.1800|123.8400
+LANECO|C|M|Lanao del Norte|8.1940|123.8400
 LASURECO|C|M|Lanao del Sur|7.9900|124.2900
 ZAMCELCO|C|M|Zamboanga City|6.9214|122.0790
 ZANECO|C|M|Zamboanga del Norte|8.5886|123.3409
@@ -372,7 +441,7 @@ PRESCO|C|L|Pampanga|15.1900|120.7500
 PROSIELCO|C|V|Siquijor|9.2000|123.5900
 DORELCO|C|V|Leyte (Don Orestes Romualdez)|11.1900|124.5600
 SAJELCO|C|L|San Jose City, Nueva Ecija|15.784|120.972
-TEI|P|L|Tarlac|15.488|120.588
+TEI|P|L|Tarlac|15.4678|120.5922
 CASELCO|C|M|Mapun (Cagayan de Sulu), Tawi-Tawi|6.990|118.510
 FBPC|P|L|Bauan, Batangas|13.790|121.010
 LUBELCO|C|L|Lubang Island, Occidental Mindoro|13.800|120.120
@@ -681,7 +750,7 @@ const WD=WT.d.map(a=>({id:"w"+a[0],t:"W",n:a[1],a:a[2],i:a[3],cat:a[4],asof:a[5]
 WD.forEach(u=>{u.k=(u.n+" "+u.a+" "+(WA[u.a]||"")+" "+IS[u.i]+" water district").toLowerCase()});
 const ALL=[...R,...WD],BY=new Map(ALL.map(u=>[u.id,u]));
 const cmp=(a,b)=>a.n.localeCompare(b.n,"en",{numeric:true,sensitivity:"base"})||a.a.localeCompare(b.a);
-const ALPHA=[...R].sort(cmp),WALPHA=[...WD].sort(cmp);
+const ALPHA=[...R].sort(cmp),WALPHA=[...WD].sort(cmp),AALPHA=[...R,...WD].sort(cmp);
 const HK={};for(const n in RATES){const h=RATES[n];HK[n]=h?Object.keys(h).sort().reverse():[]}
 const ym=m=>+m.slice(0,4)*12+ +m.slice(5,7)-1,now=new Date(),cur=now.getFullYear()*12+now.getMonth();
 const FM={},fm=m=>FM[m]||(FM[m]=new Date(+m.slice(0,4),+m.slice(5,7)-1,1).toLocaleString("en-PH",{month:"long",year:"numeric"}));
@@ -762,11 +831,12 @@ $("ht").innerHTML=[...d].reverse().map((p,k,a)=>{const q=a[k+1],df=q?p.r-q.r:0;r
 let raf=0,lastKey=null;
 const schedule=()=>{raf||(raf=requestAnimationFrame(()=>{raf=0;draw()}))};
 function draw(){
-const q=$("q").value.trim().toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked,DS=MODE==="W"?WALPHA:ALPHA;
-const LS=DS.filter(u=>{if(!(F==="all"||u.t===F||u.i===F||"k"+u.cat===F)||(q&&!u.k.includes(q)))return false;const x=rate(u);return(MODE==="W"||vs==="all"||(x&&x.s===vs))&&(!hr||x)});
+const q=$("q").value.trim().toLowerCase(),vs=$("vs").value,so=$("so").value,hr=$("hr").checked,DS=MODE==="W"?WALPHA:MODE==="A"?AALPHA:ALPHA;
+const LS=DS.filter(u=>{if(!(F==="all"||u.t===F||u.i===F||"k"+u.cat===F)||(q&&!u.k.includes(q)))return false;const x=rate(u);return(u.t==="W"||vs==="all"||(x&&x.s===vs))&&(!hr||x)});
 if(so!=="az"){const v=u=>{const x=rate(u);return x?x.r:null};LS.sort((a,b)=>{const p=v(a),r=v(b);if(p===null)return r===null?0:1;if(r===null)return-1;return so==="lo"?p-r:r-p})}
 CUR=LS;
-$("cnt").textContent=LS.length+" of "+DS.length+(MODE==="W"?" water districts":" utilities")+" · "+LS.reduce((n,u)=>n+(rate(u)?1:0),0)+" with a "+(MODE==="W"?"bill":"rate")+" ("+(MOS[MODE]==="latest"?"latest available":fm(MOS[MODE]))+")";
+const noun=MODE==="W"?" water districts":MODE==="A"?" electric & water utilities":" utilities",what=MODE==="W"?"bill":MODE==="A"?"rate or bill":"rate",per=MODE==="A"?(MOS.E==="latest"&&MOS.W==="latest"?"latest available":"selected months"):(MOS[MODE]==="latest"?"latest available":fm(MOS[MODE]));
+$("cnt").textContent=LS.length+" of "+DS.length+noun+" · "+LS.reduce((n,u)=>n+(rate(u)?1:0),0)+" with a "+what+" ("+per+")";
 $("g").innerHTML=LS.length?LS.map(row).join(""):'<div class="empty">No matches.<br><br><button type="button" class="btn" data-reset>Clear filters</button></div>';
 KEY=[MODE,F,q,vs,hr].join("|");TOT=DS.length;syncMap(LS,KEY,TOT);
 }
@@ -774,7 +844,7 @@ KEY=[MODE,F,q,vs,hr].join("|");TOT=DS.length;syncMap(LS,KEY,TOT);
 /* ---- map (created after first paint of the list; markers built once) ---- */
 let map=null,ML=null,ft=0;
 const HB=[[5,117],[20.8,127]];
-const isAct=u=>(u.t==="W")===(MODE==="W");
+const isAct=u=>MODE==="A"||(u.t==="W")===(MODE==="W");
 const stOf=u=>(isAct(u)?0:1)|(rate(u)?0:2);
 function mkIcon(u,st){return L.divIcon({className:"mk "+u.t+(st&1?" dim":"")+(st&2?" nr":""),html:'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-'+(u.t==="W"?"drop":"bolt")+'"/></svg>',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-10]})}
 /* both utility types live on the one map: the selected type is bright and follows the filters, the other is dimmed */
@@ -793,7 +863,7 @@ if(n){const e=g.querySelector('[data-n="'+CSS.escape(n)+'"]');if(e){e.classList.
 
 function initMap(){
 const LL=window.L,el=$("map");
-if(!LL){el.innerHTML='<p class="cnt" style="padding:12px">Map could not load (check your internet connection). The list still works.</p>';return}
+if(!LL){el.innerHTML='<p class="cnt" style="padding:12px">Map could not load (check your internet connection). The list still works.</p>';finish();return}
 map=LL.map(el,{minZoom:5,maxBounds:[[3,114],[22.5,129]],preferCanvas:true,zoomSnap:.5,zoomDelta:1});
 map.fitBounds(HB,{animate:false});
 const sz=()=>{const z=map.getZoom();el.style.setProperty("--ms",(z<6.5?15:z<7.5?18:z<8.5?21:24)+"px")};map.on("zoomend",sz);sz();
@@ -811,7 +881,8 @@ const sr=LL.svg({pane:"land"});
 [[12.7,123.3],[12.2,123.8],[11.9,123.5],[12.3,123.2]],
 [[9.8,125.5],[9.4,126.0],[8.5,126.5],[7.5,126.6],[6.9,126.3],[6.1,126.2],[5.95,125.4],[6.3,125.0],[6.1,124.6],[6.9,124.2],[7.3,123.7],[7.8,122.9],[7.0,122.1],[7.7,122.3],[8.2,123.0],[8.6,123.4],[8.2,124.2],[8.5,124.65],[8.9,125.4]]
 ].forEach(p=>LL.polygon(p,{renderer:sr,className:"land",interactive:false}).addTo(map));
-LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap contributors"}).addTo(map);
+const TL=LL.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap contributors"}).addTo(map);
+TL.once("load",()=>{spSet(100,"Ready!");finish()});
 ML=LL.layerGroup().addTo(map);
 for(const u of ALL){const st=stOf(u);u.ms=st;u.mk=LL.marker([u.la,u.ln],{icon:mkIcon(u,st),title:u.n,keyboard:false,zIndexOffset:st&1?0:500});u.mk.un=u.id;
 u.mk.bindPopup(()=>card(u),{minWidth:240,maxWidth:300,autoPanPaddingTopLeft:[10,50],autoPanPaddingBottomRight:[10,10]})}
@@ -820,6 +891,7 @@ map.on("popupclose",()=>setActive(null));
 if("ResizeObserver"in window)new ResizeObserver(()=>map.invalidateSize({animate:false})).observe(el);else addEventListener("resize",()=>map.invalidateSize());
 lastKey=KEY;
 syncMap(CUR,KEY,TOT);
+spSet(85,"Placing pins on the map…");setTimeout(finish,4500);
 }
 
 /* ---- events ---- */
@@ -827,13 +899,15 @@ $("q").addEventListener("input",schedule);
 for(const i of["so","vs","hr"])$(i).addEventListener("change",schedule);
 $("mo").addEventListener("change",e=>{MOS[MODE]=e.target.value;if(MODE==="W")WRC=new Map();else RC=new Map();schedule()});
 /* Electric / Water switch */
-const CH={E:$("ch").innerHTML,W:'<button type="button" class="chip" data-f="all" aria-pressed="true">All</button><button type="button" class="chip" data-f="L" aria-pressed="false">Luzon</button><button type="button" class="chip" data-f="V" aria-pressed="false">Visayas</button><button type="button" class="chip" data-f="M" aria-pressed="false">Mindanao</button><button type="button" class="chip" data-f="kA" aria-pressed="false" title="Category A: largest water districts">Cat. A</button><button type="button" class="chip" data-f="kB" aria-pressed="false" title="Category B">Cat. B</button><button type="button" class="chip" data-f="kC" aria-pressed="false" title="Category C">Cat. C</button><button type="button" class="chip" data-f="kD" aria-pressed="false" title="Category D: smallest water districts">Cat. D</button>'};
+const CH={E:$("ch").innerHTML,A:'<button type="button" class="chip" data-f="all" aria-pressed="true">All</button><button type="button" class="chip" data-f="P" aria-pressed="false">Private</button><button type="button" class="chip" data-f="C" aria-pressed="false">Co-op</button><button type="button" class="chip" data-f="W" aria-pressed="false">Water</button><button type="button" class="chip" data-f="L" aria-pressed="false">Luzon</button><button type="button" class="chip" data-f="V" aria-pressed="false">Visayas</button><button type="button" class="chip" data-f="M" aria-pressed="false">Mindanao</button>',W:'<button type="button" class="chip" data-f="all" aria-pressed="true">All</button><button type="button" class="chip" data-f="L" aria-pressed="false">Luzon</button><button type="button" class="chip" data-f="V" aria-pressed="false">Visayas</button><button type="button" class="chip" data-f="M" aria-pressed="false">Mindanao</button><button type="button" class="chip" data-f="kA" aria-pressed="false" title="Category A: largest water districts">Cat. A</button><button type="button" class="chip" data-f="kB" aria-pressed="false" title="Category B">Cat. B</button><button type="button" class="chip" data-f="kC" aria-pressed="false" title="Category C">Cat. C</button><button type="button" class="chip" data-f="kD" aria-pressed="false" title="Category D: smallest water districts">Cat. D</button>'};
 const monthOpts=m=>(m==="W"?WP.map(p=>`<option value="${p}">${fm(p)}</option>`):MS.map(p=>`<option value="${p}">${fm(p)}</option>`)).join("")+'<option value="latest">Latest available</option>';
 function setMode(m){if(m===MODE)return;MODE=m;F="all";lastKey=null;ACT=null;document.body.dataset.m=m;
 for(const b of $("md").children)b.setAttribute("aria-pressed",b.dataset.m===m);
-$("ch").innerHTML=CH[m];$("mo").innerHTML=monthOpts(m);$("mo").value=MOS[m];
-const ph=m==="W"?"Search water district or province…":"Search utility or province…";$("q").placeholder=ph;$("q").setAttribute("aria-label",ph);
-$("mo").setAttribute("aria-label",m==="W"?"Data snapshot":"Billing month");$("hrt").textContent=m==="W"?"With bill only":"With rate only";
+$("ch").innerHTML=CH[m];if(m!=="A"){$("mo").innerHTML=monthOpts(m);$("mo").value=MOS[m];$("mo").setAttribute("aria-label",m==="W"?"Data snapshot":"Billing month")}
+const ph=m==="W"?"Search water district or province…":m==="A"?"Search any electric or water utility…":"Search utility or province…";$("q").placeholder=ph;$("q").setAttribute("aria-label",ph);
+$("hrt").textContent=m==="W"?"With bill only":m==="A"?"With rate or bill only":"With rate only";
+/* price sorting is only meaningful within one utility type (₱/kWh vs ₱ per 20 m³) */
+for(const o of $("so").options)o.disabled=m==="A"&&o.value!=="az";if(m==="A")$("so").value="az";
 if(map)map.closePopup();schedule()}
 $("md").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setMode(b.dataset.m)});
 $("ch").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.f;lastKey=null;
@@ -862,12 +936,23 @@ const CONTACT="";
 if(/^[^\s@"<>]+@[^\s@"<>]+\.[^\s@"<>]+$/.test(CONTACT)){const m="mailto:"+CONTACT+"?subject="+encodeURIComponent("UtilityCheck data correction");
 $("rp").innerHTML=' · <a href="'+esc(m)+'">Report an error</a>';
 $("dce").innerHTML=' If you spot an error, or you are a utility that wants a rate corrected, email <a href="'+esc(m)+'">'+esc(CONTACT)+'</a> and we will review it promptly.'}
-/* first-visit notice (remembered after acceptance; bump the version to ask everyone again) */
-const AK="uc-ack-v1",gt=$("gt");let seen=false;try{seen=localStorage.getItem(AK)==="1"}catch(e){}
+/* disclaimer: shown on EVERY visit (nothing is remembered), right after the splash; Esc can't dismiss it, only "I Accept" */
+const gt=$("gt");
 gt.addEventListener("cancel",e=>e.preventDefault());
-$("ga").addEventListener("click",()=>{try{localStorage.setItem(AK,"1")}catch(e){}gt.close()});
+$("ga").addEventListener("click",()=>gt.close());
 $("gf").addEventListener("click",()=>$("dl").showModal());
-if(!seen)gt.showModal();
+const openGate=()=>{if(!gt.open)gt.showModal();$("ga").focus()};
+/* splash: real progress steps, a minimum run so the logo animation plays, then it pops open and the app pops in */
+const SP=$("splash");let spP=0,fin=false;
+function spSet(p,t){if(!SP)return;spP=Math.max(spP,p);$("spb").style.width=spP+"%";if(t&&p>=spP)$("sps").textContent=t}
+function finish(){if(fin)return;fin=true;if(!SP){openGate();return}
+setTimeout(()=>{spSet(100,"Ready!");setTimeout(()=>{SP.classList.add("out");document.body.classList.add("ready");setTimeout(()=>{SP.remove();openGate()},850)},350)},Math.max(0,2300-performance.now()))}
+if(SP){const lg=$("spl"),zap=()=>{lg.classList.remove("zap");void lg.offsetWidth;lg.classList.add("zap")};
+lg.addEventListener("click",zap);lg.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();zap()}});
+SP.addEventListener("pointermove",e=>{const r=lg.getBoundingClientRect(),dx=(e.clientX-r.left-r.width/2)/innerWidth,dy=(e.clientY-r.top-r.height/2)/innerHeight;
+lg.style.setProperty("--rx",(-dy*30).toFixed(1)+"deg");lg.style.setProperty("--ry",(dx*30).toFixed(1)+"deg")});
+SP.addEventListener("pointerleave",()=>{lg.style.setProperty("--rx","0deg");lg.style.setProperty("--ry","0deg")});
+spSet(20,"Reading electric utilities…")}
 /* disclaimer */
 const dl=$("dl");$("ab").addEventListener("click",()=>dl.showModal());$("dc").addEventListener("click",()=>dl.close());
 dl.addEventListener("click",e=>{if(e.target===dl)dl.close()});
@@ -875,7 +960,9 @@ dl.addEventListener("click",e=>{if(e.target===dl)dl.close()});
 /* boot: list first, then map as soon as Leaflet (deferred) is ready */
 $("mo").innerHTML=monthOpts("E");$("mo").value=MOS.E;document.body.dataset.m="E";
 if(WT.asOf)$("wasof").textContent=fm(WT.asOf);
+spSet(45,"Loading water districts…");
 draw();
+spSet(65,"Building the list…");
 if(window.L)initMap();else addEventListener("DOMContentLoaded",initMap);
 })();
 </script>
